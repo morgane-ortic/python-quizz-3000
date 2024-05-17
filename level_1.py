@@ -51,8 +51,8 @@ Results of multiplication by 6:
 6 x 8 = 48
 6 x 9 = 54
 6 x 10 = 60""",
-        "output": "Results of multiplication by 6:\n6 x 1 = 6\n6 x 2 = 12\n6 x 3 = 18\n6 x 4 = 24\n6 x 5 = 30\n6 x 6 = 36\n6 x 7 = 42\n6 x 8 = 48\n6 x 9 = 54\n6 x 10 = 60\n",
-        "regex": r"Results of multiplication by 6:\n6 x 1 = 6\n6 x 2 = 12\n6 x 3 = 18\n6 x 4 = 24\n6 x 5 = 30\n6 x 6 = 36\n6 x 7 = 42\n6 x 8 = 48\n6 x 9 = 54\n6 x 10 = 60",
+        "output": "6 x 1 = 6\n6 x 2 = 12\n6 x 3 = 18\n6 x 4 = 24\n6 x 5 = 30\n6 x 6 = 36\n6 x 7 = 42\n6 x 8 = 48\n6 x 9 = 54\n6 x 10 = 60\n",
+        "regex": r"6 x 1 = 6\n6 x 2 = 12\n6 x 3 = 18\n6 x 4 = 24\n6 x 5 = 30\n6 x 6 = 36\n6 x 7 = 42\n6 x 8 = 48\n6 x 9 = 54\n6 x 10 = 60",
         "code_regex": "for\s+[a-zA-Z_][a-zA-Z0-9_]*\s+in\s+range\(\d+,\s*\d+\):",
         "solution": """
 for i in range(1, 11):

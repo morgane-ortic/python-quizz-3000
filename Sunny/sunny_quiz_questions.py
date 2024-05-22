@@ -1,6 +1,24 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import scrolledtext
+import io
+import traceback
+from contextlib import redirect_stdout
+
+def run_python_code(code):
+    # Create a string buffer to capture the output
+    buffer = io.StringIO()
+    try:
+        # Redirect stdout to the buffer
+        with redirect_stdout(buffer):
+            exec(code, {})
+    except Exception as e:
+        # Capture the full traceback and add it to the buffer
+        buffer.write(traceback.format_exc())
+    # Get the output from the buffer
+    output = buffer.getvalue()
+    buffer.close()
+    return output
 
 class QuizApp:
     def __init__(self, root):
@@ -32,7 +50,8 @@ class QuizApp:
         run_button.pack(side=tk.LEFT, padx=5, pady=5)
 
         # Set the quiz question
-        self.quiz_question = "# Fix the code to print 'Hello, World!'\nprint('Hello World')"
+        self.quiz_question = "# Fix the code to print 'Hello, World!' 5 times\nfor i in range(5):\n    print('Hello World', i)"
+        self.correct_output = "Hello World 0\nHello World 1\nHello World 2\nHello World 3\nHello World 4\n"
         self.code_editor.insert(tk.END, self.quiz_question)
 
     def run_code(self):
@@ -40,22 +59,17 @@ class QuizApp:
         user_code = self.code_editor.get("1.0", tk.END)
 
         # Execute the user's code and capture the output
-        import sys
-        from io import StringIO
-        old_stdout = sys.stdout
-        sys.stdout = output_buffer = StringIO()
-
-        try:
-            exec(user_code)
-        except Exception as e:
-            output_buffer.write(str(e))
-
-        sys.stdout = old_stdout
-        output = output_buffer.getvalue()
+        output = run_python_code(user_code)
 
         # Display the output in the output window
         self.output_window.delete("1.0", tk.END)
         self.output_window.insert(tk.END, output)
+
+        # Check if the output matches the correct output
+        if output.strip() == self.correct_output.strip():
+            self.output_window.insert(tk.END, "\nCorrect answer!")
+        else:
+            self.output_window.insert(tk.END, "\nIncorrect answer. Please try again.")
 
 if __name__ == "__main__":
     root = tk.Tk()

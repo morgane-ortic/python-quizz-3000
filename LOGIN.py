@@ -3,6 +3,8 @@ import customtkinter
 from PIL import ImageTk, Image
 import json
 from tkinter import messagebox
+import re       # Import regex
+import bcrypt   # Import bcrypt for password hashing
 
 customtkinter.set_appearance_mode("dark")
 customtkinter.set_default_color_theme("dark-blue")
@@ -125,6 +127,7 @@ def show_register_form():
                                          border_width=0,
                                          fg_color="#021926")
     user_entry1.pack(pady=10)
+    # user_entry1.focus_set()  # Set focus to user_entry1 - disabled bc it removes the placeholder text "Email address", we would need a whole redesign
 
     user_entry2 = customtkinter.CTkEntry(master=frame, placeholder_text="Password", show="*",
                                          height=40, width=300,
@@ -159,22 +162,33 @@ def create_user(user_entry1, user_entry2, user_entry3):
     except FileNotFoundError:
         user_info = []
 
-    username = user_entry1.get()
-    password = user_entry2.get()
-    confirmation = user_entry3.get()
+    username = user_entry1.get()        # get username from user entry
+    password = user_entry2.get()        # get password from user entry
+    confirmation = user_entry3.get()    # get password confirmation from user entry
 
     existing_user = next((user for user in user_info if user['username'] == username), None)
+    valid_email_address = re.search(r"^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$", username)  # Check if the formatting of the email address is valid
+    strong_password = re.search(r"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$", password)  # Check if the password is strong enough
 
-    if existing_user or password != confirmation:
+    if existing_user or password != confirmation:   # Show an error message and clear all fields if user alread existing or password confirmation not matching
         messagebox.showinfo("Error", "Username already exists or passwords don't match!")
         user_entry1.delete(0, END)
         user_entry2.delete(0, END)
         user_entry3.delete(0, END)
+    elif not valid_email_address:   # Show an error message and clear "email address" field if the email address is invalid
+        messagebox.showinfo("Error", "Invalid email address!")
+        user_entry1.delete(0, END)
+    elif not strong_password:       # Show an error message and clear "password" and "confirm password" fields if the password is not strong enough
+        messagebox.showinfo("Error", "Password must be at least 8 characters long and contain at least one letter and one number!")
+        user_entry2.delete(0, END)
+        user_entry3.delete(0, END)
     else:
-        user_info.append({'username': username, 'password': password})
+        hashed_password = bcrypt.hashpw(user_entry2.get().encode(), bcrypt.gensalt())   # Hash the password with salt for safety
+        user_info.append({'username': username, 'password': hashed_password.decode()})  # Decode the hashed password to store it as a string and append it to database with username
         with open('user_info.json', 'w') as file:
             json.dump(user_info, file)
         messagebox.showinfo("Success", "Account created successfully! Welcome, " + username + "!")
+        del password, confirmation, hashed_password     # Delete the password, confirmation and hashed password from memory for safety
         show_main_buttons()
 
 if __name__ == "__main__":

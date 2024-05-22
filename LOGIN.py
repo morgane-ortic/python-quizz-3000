@@ -109,7 +109,7 @@ def show_login_form():
                                       corner_radius=20,
                                       border_width=0,
                                       fg_color="#021926")
-    my_entry.pack(pady=10)
+    my_entry2.pack(pady=10)
 
     login_button = customtkinter.CTkButton(master=frame, text="Continue", font=("Arial", 18),
                                            height=40, width=300, corner_radius=20,

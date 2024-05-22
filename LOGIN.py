@@ -1,8 +1,33 @@
 from tkinter import *
 import customtkinter
 from PIL import ImageTk, Image
-import json
 from tkinter import messagebox
+import re       # Import regex
+import bcrypt   # Import bcrypt for password hashing
+
+# Roman's code --------------------------------------------------------------
+
+# 1. Create a database to store user information
+
+import sqlite3
+from tkinter import END
+
+def init_db():
+    conn = sqlite3.connect('user_info.db')
+    c = conn.cursor()
+    c.execute('''CREATE TABLE IF NOT EXISTS users (
+                 id INTEGER PRIMARY KEY AUTOINCREMENT,
+                 username TEXT UNIQUE NOT NULL,
+                 password TEXT NOT NULL)''')
+    conn.commit()
+    conn.close()
+
+
+# call the function to create the database
+
+init_db()
+
+# End of Roman's code ----------------------------------------------------------
 
 customtkinter.set_appearance_mode("dark")
 customtkinter.set_default_color_theme("dark-blue")
@@ -125,6 +150,7 @@ def show_register_form():
                                          border_width=0,
                                          fg_color="#021926")
     user_entry1.pack(pady=10)
+    # user_entry1.focus_set()  # Set focus to user_entry1 - disabled bc it removes the placeholder text "Email address", we would need a whole redesign
 
     user_entry2 = customtkinter.CTkEntry(master=frame, placeholder_text="Password", show="*",
                                          height=40, width=300,
@@ -152,30 +178,57 @@ def show_register_form():
                                           command=show_main_buttons)
     back_button.pack(pady=10)
 
-def create_user(user_entry1, user_entry2, user_entry3):
-    try:
-        with open('user_info.json', 'r') as file:
-            user_info = json.load(file)
-    except FileNotFoundError:
-        user_info = []
+# Roman's code --------------------------------------------------------------
 
-    username = user_entry1.get()
-    password = user_entry2.get()
-    confirmation = user_entry3.get()
+# 2. Create a function to create a user account
 
-    existing_user = next((user for user in user_info if user['username'] == username), None)
+def create_user(user_entry1, user_entry2, user_entry3): # user_entry1, user_entry2, user_entry3 are Entry widgets
+    username = user_entry1.get()        # get username from user entry
+    password = user_entry2.get()        # get password from user entry
+    confirmation = user_entry3.get()    # get password confirmation from user entry
 
-    if existing_user or password != confirmation:
-        messagebox.showinfo("Error", "Username already exists or passwords don't match!")
-        user_entry1.delete(0, END)
+    if password != confirmation:    # check if the passwords match
+        messagebox.showinfo("Error", "Passwords don't match!")   # show an error message
+        user_entry2.delete(0, END)  # clear the password Entry widget
+        user_entry3.delete(0, END)  # clear the confirm password Entry widget
+        return  # exit the function
+
+    conn = sqlite3.connect('user_info.db') # connect to the database
+    c = conn.cursor() # create a cursor object
+
+    c.execute('SELECT * FROM users WHERE username = ?', (username,)) # check if the username already exists
+    existing_user = c.fetchone() # fetch the result
+    valid_email_address = re.search(r"^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$", username)  # Check if the formatting of the email address is valid
+    strong_password = re.search(r"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$", password)
+
+    if existing_user:   # if the username already exists
+        messagebox.showinfo("Error", "Username already exists!")    # show an error message
+        user_entry1.delete(0, END)  # clear the 3 widgets
+        user_entry2.delete(0, END)  
+        user_entry3.delete(0, END)
+    elif password != confirmation:    # Show an error message and clear password fields if password confirmation not matching
+        messagebox.showinfo("Error", "Passwords don't match!")
         user_entry2.delete(0, END)
         user_entry3.delete(0, END)
-    else:
-        user_info.append({'username': username, 'password': password})
-        with open('user_info.json', 'w') as file:
-            json.dump(user_info, file)
-        messagebox.showinfo("Success", "Account created successfully! Welcome, " + username + "!")
-        show_main_buttons()
+    elif not valid_email_address:   # Show an error message and clear "email address" field if the email address is invalid
+        messagebox.showinfo("Error", "Invalid email address!")
+        user_entry1.delete(0, END)
+    elif not strong_password:       # Show an error message and clear "password" and "confirm password" fields if the password is not strong enough
+        messagebox.showinfo("Error", "Password must be at least 8 characters long and contain at least one letter and one number!")
+        user_entry2.delete(0, END)
+        user_entry3.delete(0, END)  
+    else:   # if the username doesn't exist
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()) # hash the password
+        c.execute('INSERT INTO users (username, password) VALUES (?, ?)', (username, hashed_password))  # insert the username and password into the database
+        conn.commit()   # commit the changes
+        messagebox.showinfo("Success", "Account created successfully! Welcome, " + username + "!")  # show a success message
+
+        show_main_buttons() # show the main buttons
+    
+    conn.close()    # close the connection
+    del password, confirmation, hashed_password     # Delete the password, confirmation and hashed password from memory for safety
+
+# End of Roman's code ----------------------------------------------------------
 
 if __name__ == "__main__":
     main_screen()

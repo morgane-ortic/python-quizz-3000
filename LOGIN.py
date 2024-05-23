@@ -11,6 +11,15 @@ import bcrypt   # Import bcrypt for password hashing
 
 import sqlite3
 from tkinter import END
+# End of Roman's code ----------------------------------------------------------
+
+def load_challenge():           # Load the challenges from quizz file
+    for widget in root.winfo_children():
+        widget.destroy()
+    import quizz_questions
+    quizz_questions.main(root)  # Import the challenges from the main function of our quizz file into the current window
+
+# Roman's code --------------------------------------------------------------
 
 def init_db():
     conn = sqlite3.connect('user_info.db')
@@ -18,7 +27,8 @@ def init_db():
     c.execute('''CREATE TABLE IF NOT EXISTS users (
                  id INTEGER PRIMARY KEY AUTOINCREMENT,
                  username TEXT UNIQUE NOT NULL,
-                 password TEXT NOT NULL)''')
+                 password TEXT NOT NULL,
+                 score INTEGER DEFAULT 0)''')       # Create a score field of 0, we will update user's future score to there
     conn.commit()
     conn.close()
 
@@ -92,8 +102,6 @@ def show_login_form():
     frame = customtkinter.CTkFrame(master=right_frame, width=400, height=500, corner_radius=0, fg_color="#020c15")
     frame.place(relx=0.5, rely=0.5, anchor=CENTER)
 
-    
-
     l1 = customtkinter.CTkLabel(master=frame, text="Welcome back", font=("Arial", 34), text_color="white")
     l1.pack(pady=10)
 
@@ -105,15 +113,16 @@ def show_login_form():
     my_entry.pack(pady=10)
 
     my_entry2 = customtkinter.CTkEntry(master=frame, placeholder_text="Password",
-                                      height=40, width=300,
-                                      corner_radius=20,
-                                      border_width=0,
-                                      fg_color="#021926")
+                                       height=40, width=300,
+                                       corner_radius=20,
+                                       border_width=0,
+                                       fg_color="#021926")
     my_entry2.pack(pady=10)
 
     login_button = customtkinter.CTkButton(master=frame, text="Continue", font=("Arial", 18),
                                            height=40, width=300, corner_radius=20,
-                                           fg_color="#00A86B", text_color="white", hover_color="#009E5A", cursor="hand2")
+                                           fg_color="#00A86B", text_color="white", hover_color="#009E5A", cursor="hand2",
+                                           command=lambda: login_user(my_entry, my_entry2)) # call the login_user function with the username and password Entry widgets as arguments with username and password as arguments
     login_button.pack(pady=10)
 
     signup_label = customtkinter.CTkLabel(master=frame, text="Don't have an account?", font=("Arial", 12), text_color="white")
@@ -129,7 +138,6 @@ def show_login_form():
                                           height=30, width=100, corner_radius=20, fg_color="white",
                                           text_color="black", hover_color="#f0f0f0", cursor="hand2",
                                           command=show_main_buttons)
-    back_button.pack(pady=10)
 
 def show_register_form():
     global right_frame
@@ -178,6 +186,7 @@ def show_register_form():
                                           command=show_main_buttons)
     back_button.pack(pady=10)
 
+
 # Roman's code --------------------------------------------------------------
 
 # 2. Create a function to create a user account
@@ -219,7 +228,7 @@ def create_user(user_entry1, user_entry2, user_entry3): # user_entry1, user_entr
         user_entry3.delete(0, END)  
     else:   # if the username doesn't exist
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()) # hash the password
-        c.execute('INSERT INTO users (username, password) VALUES (?, ?)', (username, hashed_password))  # insert the username and password into the database
+        c.execute('INSERT INTO users (username, password, score) VALUES (?, ?, ?)', (username, hashed_password, 0))  # insert the username and password into the database
         conn.commit()   # commit the changes
         messagebox.showinfo("Success", "Account created successfully! Welcome, " + username + "!")  # show a success message
 
@@ -229,6 +238,37 @@ def create_user(user_entry1, user_entry2, user_entry3): # user_entry1, user_entr
     del password, confirmation, hashed_password     # Delete the password, confirmation and hashed password from memory for safety
 
 # End of Roman's code ----------------------------------------------------------
+
+
+# Morgane's code --------------------------------------------------------------
+
+def login_user(username_entry, password_entry):
+    username = username_entry.get()
+    password = password_entry.get()
+
+    conn = sqlite3.connect('user_info.db')  # Connect to the database
+    c = conn.cursor()   # Create a cursor object
+
+    c.execute('SELECT * FROM users WHERE username = ?', (username,))    # Select the user from the database
+    user = c.fetchone()                                                 # Fetch the result and store it in the user variable
+
+    if user is None:
+        messagebox.showinfo("Error", "User not found!")
+        return
+
+    stored_password = user[2]   # Get the stored password from the database
+    score = user[3]
+
+    if bcrypt.checkpw(password.encode('utf-8'), stored_password):       # Check if the password is correct
+        messagebox.showinfo("Success", "Logged in successfully! Welcome, " + username + "!")
+        load_challenge()  # Call user page function
+    else:
+        messagebox.showinfo("Error", "Incorrect password!") # Show an error message if the password is incorrect
+
+    conn.close()    # Close the connection to database
+
+# End of Morgane's code ----------------------------------------------------------
+
 
 if __name__ == "__main__":
     main_screen()

@@ -26,33 +26,50 @@ class QuizApp:
         self.root.title("PythonBugHunt")
         self.root.geometry("1600x600")
 
-        # Set the default theme to dark mode
-        self.root.config(bg="#333333")
-
         # Create a Frame to hold the two windows
-        window_frame = tk.Frame(self.root, bg="#333333")
+        window_frame = tk.Frame(self.root)
         window_frame.pack(fill=tk.BOTH, expand=True)
 
-        # Create a Text widget for code input
-        self.code_editor = scrolledtext.ScrolledText(window_frame, font=("Consolas", 12), wrap=tk.WORD, bg="#333333", fg="white")
+        # Create a Text widget for code input (white background)
+        self.code_editor = scrolledtext.ScrolledText(window_frame, font=("Consolas", 12), wrap=tk.WORD, bg="white", fg="black")
         self.code_editor.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
-        # Create a Text widget for displaying output
-        self.output_window = scrolledtext.ScrolledText(window_frame, font=("Consolas", 12), wrap=tk.WORD, bg="#333333", fg="white")
+        # Create a Text widget for displaying output (black background)
+        self.output_window = scrolledtext.ScrolledText(window_frame, font=("Consolas", 12), wrap=tk.WORD, bg="black", fg="white")
         self.output_window.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
 
         # Create a Frame for the buttons
-        button_frame = tk.Frame(self.root, bg="#333333")
+        button_frame = tk.Frame(self.root)
         button_frame.pack(fill=tk.X)
 
         # Create a "Run" button
-        run_button = tk.Button(button_frame, text="Run", command=self.run_code, bg="#4CAF50", fg="white", relief=tk.RAISED)
-        run_button.pack(side=tk.LEFT, padx=5, pady=5)
+        run_button = tk.Button(button_frame, text=" Run ", command=self.run_code, bg="#4CAF50", fg="white", relief=tk.RAISED)
+        run_button.pack(side=tk.BOTTOM, padx=5, pady=5)
 
-        # Set the quiz question
-        self.quiz_question = "# Fix the code to print 'Hello, World!' 5 times\nfor i in range(5):\n    print('Hello World', i)"
-        self.correct_output = "Hello World 0\nHello World 1\nHello World 2\nHello World 3\nHello World 4\n"
-        self.code_editor.insert(tk.END, self.quiz_question)
+        # Define a list of quiz questions
+        self.quiz_questions = [
+            {
+                "question": "# Fix the code to print 'Hello, World!'\nprint('Hello World')",
+                "code": "print('Hello World')",
+                "output": "Hello, World!\n"
+            },
+            {
+                "question": "# Fix the code to print the sum of two numbers\na = 5\nb = 10\nprint(a + b)",
+                "code": "a = 5\nb = 10\nprint(a + b)",
+                "output": "15\n"
+            },
+            # Add more questions here
+        ]
+
+        # Set the initial quiz question
+        self.current_question = 0
+        self.set_question(self.current_question)
+
+    def set_question(self, question_index):
+        question = self.quiz_questions[question_index]
+        self.code_editor.delete("1.0", tk.END)
+        self.code_editor.insert(tk.END, question["question"])
+        self.correct_output = question["output"]
 
     def run_code(self):
         # Get the user's code from the Text widget
@@ -68,6 +85,10 @@ class QuizApp:
         # Check if the output matches the correct output
         if output.strip() == self.correct_output.strip():
             self.output_window.insert(tk.END, "\nCorrect answer!")
+            # Move to the next question if available
+            if self.current_question < len(self.quiz_questions) - 1:
+                self.current_question += 1
+                self.set_question(self.current_question)
         else:
             self.output_window.insert(tk.END, "\nIncorrect answer. Please try again.")
 

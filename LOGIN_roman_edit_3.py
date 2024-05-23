@@ -27,32 +27,6 @@ def init_db():
 
 init_db()  
 
-import subprocess
-
-def login_user(username_entry, password_entry):
-    username = username_entry.get()
-    password = password_entry.get()
-    
-    conn = sqlite3.connect('user_info.db')
-    c = conn.cursor()
-
-    c.execute('SELECT * FROM users WHERE username = ?', (username,))
-    user = c.fetchone()
-    
-    conn.close()
-
-    if user and bcrypt.checkpw(password.encode('utf-8'), user[2].encode('utf-8')):
-        messagebox.showinfo("Success", "Login successful! Welcome back, " + username + "!")
-        show_main_buttons()  # Proceed to the main part of the application
-
-        # Run the main application
-        subprocess.Popen(['python3', 'Sunny/sunny_quiz_questions.py'])  # Adjust 'python3' and 'main_app.py' as needed for your environment
-        root.destroy()  # Close the current window if desired
-    else:
-        messagebox.showinfo("Error", "Invalid username or password!")
-        username_entry.delete(0, END)
-        password_entry.delete(0, END)
-
 # End of Roman's code ----------------------------------------------------------
 
 customtkinter.set_appearance_mode("dark")
@@ -87,27 +61,49 @@ def main_screen():
 
     root.mainloop()
 
-def show_main_buttons():
-    global right_frame
-    # Clear the right_frame
-    for widget in right_frame.winfo_children(): # get all the widgets in the right_frame
-        widget.destroy()    # destroy the widgets
+# def show_main_buttons():
+#     global right_frame
+#     # Clear the right_frame
+#     for widget in right_frame.winfo_children():
+#         widget.destroy()
 
-    # Add title to the right frame
-    title_label = customtkinter.CTkLabel(master=right_frame, text="Get Started!", font=("Arial", 34), text_color="white")
-    title_label.place(relx=0.5, rely=0.3, anchor=CENTER)
+#     # Add title to the right frame
+#     title_label = customtkinter.CTkLabel(master=right_frame, text="Get Started!", font=("Arial", 34), text_color="white")
+#     title_label.place(relx=0.5, rely=0.3, anchor=CENTER)
 
-    # Add login button
-    login_button = customtkinter.CTkButton(master=right_frame, text="L o g i n", font=("Arial", 20),
-                                           width=200, height=50, corner_radius=25,
-                                           command=show_login_form)
-    login_button.place(relx=0.5, rely=0.5, anchor=CENTER)
+#     # Add login button
+#     login_button = customtkinter.CTkButton(master=right_frame, text="L o g i n", font=("Arial", 20),
+#                                            width=200, height=50, corner_radius=25,
+#                                            command=show_login_form)
+#     login_button.place(relx=0.5, rely=0.5, anchor=CENTER)
 
-    # Add register button
-    register_button = customtkinter.CTkButton(master=right_frame, text="R e g i s t e r", font=("Arial", 20),
-                                              width=200, height=50, corner_radius=25,
-                                              command=show_register_form)
-    register_button.place(relx=0.5, rely=0.6, anchor=CENTER)
+#     # Add register button
+#     register_button = customtkinter.CTkButton(master=right_frame, text="R e g i s t e r", font=("Arial", 20),
+#                                               width=200, height=50, corner_radius=25,
+#                                               command=show_register_form)
+#     register_button.place(relx=0.5, rely=0.6, anchor=CENTER)
+
+# Roman's code --------------------------------------------------------------
+
+def login_user(username_entry, password_entry):
+    username = username_entry.get()
+    password = password_entry.get()
+    
+    conn = sqlite3.connect('user_info.db')
+    c = conn.cursor()
+
+    c.execute('SELECT * FROM users WHERE username = ?', (username,))
+    user = c.fetchone()
+    
+    conn.close()
+
+    if user and bcrypt.checkpw(password.encode('utf-8'), user[2].encode('utf-8')):
+        messagebox.showinfo("Success", "Login successful! Welcome back, " + username + "!")
+        show_main_buttons()  # Proceed to the main part of the application
+    else:
+        messagebox.showinfo("Error", "Invalid username or password!")
+        username_entry.delete(0, END)
+        password_entry.delete(0, END)
 
 def show_login_form():
     global right_frame
@@ -118,28 +114,23 @@ def show_login_form():
     frame = customtkinter.CTkFrame(master=right_frame, width=400, height=500, corner_radius=0, fg_color="#020c15")
     frame.place(relx=0.5, rely=0.5, anchor=CENTER)
 
-    
-
     l1 = customtkinter.CTkLabel(master=frame, text="Welcome back", font=("Arial", 34), text_color="white")
     l1.pack(pady=10)
 
-    my_entry = customtkinter.CTkEntry(master=frame, placeholder_text="Username",    # changed to Username - Roman
-                                      height=40, width=300,
-                                      corner_radius=20,
-                                      border_width=0,
-                                      fg_color="#021926")
-    my_entry.pack(pady=10)
+    username_entry = customtkinter.CTkEntry(master=frame, placeholder_text="Username",
+                                            height=40, width=300, corner_radius=20,
+                                            border_width=0, fg_color="#021926")
+    username_entry.pack(pady=10)
 
-    my_entry2 = customtkinter.CTkEntry(master=frame, placeholder_text="Password",
-                                      height=40, width=300,
-                                      corner_radius=20,
-                                      border_width=0,
-                                      fg_color="#021926")
-    my_entry2.pack(pady=10)                                                         # changed to my_entry2 - Roman
+    password_entry = customtkinter.CTkEntry(master=frame, placeholder_text="Password", show="*",
+                                            height=40, width=300, corner_radius=20,
+                                            border_width=0, fg_color="#021926")
+    password_entry.pack(pady=10)
 
     login_button = customtkinter.CTkButton(master=frame, text="Continue", font=("Arial", 18),
                                            height=40, width=300, corner_radius=20,
-                                           fg_color="#00A86B", text_color="white", hover_color="#009E5A", cursor="hand2", command=lambda: login_user(my_entry, my_entry2))
+                                           fg_color="#00A86B", text_color="white", hover_color="#009E5A",
+                                           cursor="hand2", command=lambda: login_user(username_entry, password_entry))
     login_button.pack(pady=10)
 
     signup_label = customtkinter.CTkLabel(master=frame, text="Don't have an account?", font=("Arial", 12), text_color="white")
@@ -157,51 +148,52 @@ def show_login_form():
                                           command=show_main_buttons)
     back_button.pack(pady=10)
 
-def show_register_form():
-    global right_frame
-    # Clear the right_frame
-    for widget in right_frame.winfo_children():
-        widget.destroy()
 
-    frame = customtkinter.CTkFrame(master=right_frame, width=400, height=500, corner_radius=0, fg_color="#020c15")
-    frame.place(relx=0.5, rely=0.5, anchor=CENTER)
+# def show_register_form():
+#     global right_frame
+#     # Clear the right_frame
+#     for widget in right_frame.winfo_children():
+#         widget.destroy()
+
+#     frame = customtkinter.CTkFrame(master=right_frame, width=400, height=500, corner_radius=0, fg_color="#020c15")
+#     frame.place(relx=0.5, rely=0.5, anchor=CENTER)
 
     
-    l1 = customtkinter.CTkLabel(master=frame, text="Create your account", font=("Arial", 34), text_color="white")
-    l1.pack(pady=10)
+#     l1 = customtkinter.CTkLabel(master=frame, text="Create your account", font=("Arial", 34), text_color="white")
+#     l1.pack(pady=10)
 
-    user_entry1 = customtkinter.CTkEntry(master=frame, placeholder_text="Username",   # changed to Username - Roman
-                                         height=40, width=300,
-                                         corner_radius=20,
-                                         border_width=0,
-                                         fg_color="#021926")
-    user_entry1.pack(pady=10)
+#     user_entry1 = customtkinter.CTkEntry(master=frame, placeholder_text="Username",
+#                                          height=40, width=300,
+#                                          corner_radius=20,
+#                                          border_width=0,
+#                                          fg_color="#021926")
+#     user_entry1.pack(pady=10)
 
-    user_entry2 = customtkinter.CTkEntry(master=frame, placeholder_text="Password", show="*",
-                                         height=40, width=300,
-                                         corner_radius=20,
-                                         border_width=0,
-                                         fg_color="#021926")
-    user_entry2.pack(pady=10)
+#     user_entry2 = customtkinter.CTkEntry(master=frame, placeholder_text="Password", show="*",
+#                                          height=40, width=300,
+#                                          corner_radius=20,
+#                                          border_width=0,
+#                                          fg_color="#021926")
+#     user_entry2.pack(pady=10)
 
-    user_entry3 = customtkinter.CTkEntry(master=frame, placeholder_text="Confirm Password", show="*",
-                                         height=40, width=300,
-                                         corner_radius=20,
-                                         border_width=0,
-                                         fg_color="#021926")
-    user_entry3.pack(pady=10)
+#     user_entry3 = customtkinter.CTkEntry(master=frame, placeholder_text="Confirm Password", show="*",
+#                                          height=40, width=300,
+#                                          corner_radius=20,
+#                                          border_width=0,
+#                                          fg_color="#021926")
+#     user_entry3.pack(pady=10)
 
-    create_button = customtkinter.CTkButton(master=frame, text="Sign Up", font=("Arial", 18),
-                                            height=40, width=300, corner_radius=20,
-                                            fg_color="#00A86B", text_color="white", hover_color="#009E5A", cursor="hand2",
-                                            command=lambda: create_user(user_entry1, user_entry2, user_entry3))
-    create_button.pack(pady=10)
+#     create_button = customtkinter.CTkButton(master=frame, text="Sign Up", font=("Arial", 18),
+#                                             height=40, width=300, corner_radius=20,
+#                                             fg_color="#00A86B", text_color="white", hover_color="#009E5A", cursor="hand2",
+#                                             command=lambda: create_user(user_entry1, user_entry2, user_entry3))
+#     create_button.pack(pady=10)
 
-    back_button = customtkinter.CTkButton(master=frame, text="Back", font=("Arial", 12),
-                                          height=30, width=100, corner_radius=20, fg_color="white",
-                                          text_color="black", hover_color="#f0f0f0", cursor="hand2",
-                                          command=show_main_buttons)
-    back_button.pack(pady=10)
+#     back_button = customtkinter.CTkButton(master=frame, text="Back", font=("Arial", 12),
+#                                           height=30, width=100, corner_radius=20, fg_color="white",
+#                                           text_color="black", hover_color="#f0f0f0", cursor="hand2",
+#                                           command=show_main_buttons)
+#     back_button.pack(pady=10)
 
 # Roman's code --------------------------------------------------------------
 

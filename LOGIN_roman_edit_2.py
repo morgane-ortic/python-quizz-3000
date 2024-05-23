@@ -1,31 +1,31 @@
 from tkinter import *
 import customtkinter
 from PIL import ImageTk, Image
+import json
 from tkinter import messagebox
-import re       # Import regex
-import bcrypt   # Import bcrypt for password hashing
 
 # Roman's code --------------------------------------------------------------
 
 # 1. Create a database to store user information
 
 import sqlite3
+import bcrypt
 from tkinter import END
 
 def init_db():
-    conn = sqlite3.connect('user_info.db')
-    c = conn.cursor()
+    conn = sqlite3.connect('user_info.db')  # connect to the database
+    c = conn.cursor()   # create a cursor object
     c.execute('''CREATE TABLE IF NOT EXISTS users (
                  id INTEGER PRIMARY KEY AUTOINCREMENT,
                  username TEXT UNIQUE NOT NULL,
-                 password TEXT NOT NULL)''')
-    conn.commit()
-    conn.close()
+                 password TEXT NOT NULL)''')    # create a table to store user information
+    conn.commit()   # commit the changes
+    conn.close()    # close the connection
 
 
 # call the function to create the database
 
-init_db()
+init_db()  
 
 # End of Roman's code ----------------------------------------------------------
 
@@ -33,7 +33,7 @@ customtkinter.set_appearance_mode("dark")
 customtkinter.set_default_color_theme("dark-blue")
 
 def main_screen():
-    global root, right_frame
+    global root, right_frame    
     root = customtkinter.CTk()
     root.title("PythonBugHunt")
     root.geometry("1300x800")
@@ -43,7 +43,7 @@ def main_screen():
 
     # Left Frame for the background image and text
     left_frame = customtkinter.CTkFrame(master=root, width=900, height=600, corner_radius=0)
-    left_frame.pack(side=LEFT, fill=Y)
+    left_frame.pack(side=LEFT, fill=Y)  
 
     bg_label = Label(left_frame, image=bg_image)
     bg_label.place(relwidth=1, relheight=1)
@@ -97,7 +97,7 @@ def show_login_form():
     l1 = customtkinter.CTkLabel(master=frame, text="Welcome back", font=("Arial", 34), text_color="white")
     l1.pack(pady=10)
 
-    my_entry = customtkinter.CTkEntry(master=frame, placeholder_text="Email address",
+    my_entry = customtkinter.CTkEntry(master=frame, placeholder_text="Username",
                                       height=40, width=300,
                                       corner_radius=20,
                                       border_width=0,
@@ -109,7 +109,7 @@ def show_login_form():
                                       corner_radius=20,
                                       border_width=0,
                                       fg_color="#021926")
-    my_entry2.pack(pady=10)
+    my_entry.pack(pady=10)
 
     login_button = customtkinter.CTkButton(master=frame, text="Continue", font=("Arial", 18),
                                            height=40, width=300, corner_radius=20,
@@ -144,13 +144,12 @@ def show_register_form():
     l1 = customtkinter.CTkLabel(master=frame, text="Create your account", font=("Arial", 34), text_color="white")
     l1.pack(pady=10)
 
-    user_entry1 = customtkinter.CTkEntry(master=frame, placeholder_text="Email address",
+    user_entry1 = customtkinter.CTkEntry(master=frame, placeholder_text="Username",
                                          height=40, width=300,
                                          corner_radius=20,
                                          border_width=0,
                                          fg_color="#021926")
     user_entry1.pack(pady=10)
-    # user_entry1.focus_set()  # Set focus to user_entry1 - disabled bc it removes the placeholder text "Email address", we would need a whole redesign
 
     user_entry2 = customtkinter.CTkEntry(master=frame, placeholder_text="Password", show="*",
                                          height=40, width=300,
@@ -183,9 +182,9 @@ def show_register_form():
 # 2. Create a function to create a user account
 
 def create_user(user_entry1, user_entry2, user_entry3): # user_entry1, user_entry2, user_entry3 are Entry widgets
-    username = user_entry1.get()        # get username from user entry
-    password = user_entry2.get()        # get password from user entry
-    confirmation = user_entry3.get()    # get password confirmation from user entry
+    username = user_entry1.get()    # get the text from the Entry widget
+    password = user_entry2.get()
+    confirmation = user_entry3.get()
 
     if password != confirmation:    # check if the passwords match
         messagebox.showinfo("Error", "Passwords don't match!")   # show an error message
@@ -198,35 +197,20 @@ def create_user(user_entry1, user_entry2, user_entry3): # user_entry1, user_entr
 
     c.execute('SELECT * FROM users WHERE username = ?', (username,)) # check if the username already exists
     existing_user = c.fetchone() # fetch the result
-    valid_email_address = re.search(r"^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$", username)  # Check if the formatting of the email address is valid
-    strong_password = re.search(r"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$", password)
 
     if existing_user:   # if the username already exists
         messagebox.showinfo("Error", "Username already exists!")    # show an error message
         user_entry1.delete(0, END)  # clear the 3 widgets
         user_entry2.delete(0, END)  
-        user_entry3.delete(0, END)
-    elif password != confirmation:    # Show an error message and clear password fields if password confirmation not matching
-        messagebox.showinfo("Error", "Passwords don't match!")
-        user_entry2.delete(0, END)
-        user_entry3.delete(0, END)
-    elif not valid_email_address:   # Show an error message and clear "email address" field if the email address is invalid
-        messagebox.showinfo("Error", "Invalid email address!")
-        user_entry1.delete(0, END)
-    elif not strong_password:       # Show an error message and clear "password" and "confirm password" fields if the password is not strong enough
-        messagebox.showinfo("Error", "Password must be at least 8 characters long and contain at least one letter and one number!")
-        user_entry2.delete(0, END)
         user_entry3.delete(0, END)  
     else:   # if the username doesn't exist
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()) # hash the password
         c.execute('INSERT INTO users (username, password) VALUES (?, ?)', (username, hashed_password))  # insert the username and password into the database
         conn.commit()   # commit the changes
         messagebox.showinfo("Success", "Account created successfully! Welcome, " + username + "!")  # show a success message
-
         show_main_buttons() # show the main buttons
     
     conn.close()    # close the connection
-    del password, confirmation, hashed_password     # Delete the password, confirmation and hashed password from memory for safety
 
 # End of Roman's code ----------------------------------------------------------
 

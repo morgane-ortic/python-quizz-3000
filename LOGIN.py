@@ -11,6 +11,15 @@ import bcrypt   # Import bcrypt for password hashing
 
 import sqlite3
 from tkinter import END
+# End of Roman's code ----------------------------------------------------------
+
+def load_challenge():           # Load the challenges from quizz file
+    for widget in root.winfo_children():
+        widget.destroy()
+    import quizz_questions
+    quizz_questions.main(root)  # Import the challenges from the main function of our quizz file into the current window
+
+# Roman's code --------------------------------------------------------------
 
 def init_db():
     conn = sqlite3.connect('user_info.db')
@@ -251,7 +260,7 @@ def login_user(username_entry, password_entry):
 
     if bcrypt.checkpw(password.encode('utf-8'), stored_password):       # Check if the password is correct
         messagebox.showinfo("Success", "Logged in successfully! Welcome, " + username + "!")
-        show_user_page()  # Call user page function
+        load_challenge()  # Call user page function
     else:
         messagebox.showinfo("Error", "Incorrect password!") # Show an error message if the password is incorrect
 

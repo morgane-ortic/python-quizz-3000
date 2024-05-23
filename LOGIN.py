@@ -105,7 +105,7 @@ def show_login_form():
     l1 = customtkinter.CTkLabel(master=frame, text="Welcome back", font=("Arial", 34), text_color="white")
     l1.pack(pady=10)
 
-    my_entry = customtkinter.CTkEntry(master=frame, placeholder_text="Email address",
+    my_entry = customtkinter.CTkEntry(master=frame, placeholder_text="Username",
                                       height=40, width=300,
                                       corner_radius=20,
                                       border_width=0,
@@ -152,7 +152,7 @@ def show_register_form():
     l1 = customtkinter.CTkLabel(master=frame, text="Create your account", font=("Arial", 34), text_color="white")
     l1.pack(pady=10)
 
-    user_entry1 = customtkinter.CTkEntry(master=frame, placeholder_text="Email address",
+    user_entry1 = customtkinter.CTkEntry(master=frame, placeholder_text="Username",
                                          height=40, width=300,
                                          corner_radius=20,
                                          border_width=0,
@@ -207,8 +207,8 @@ def create_user(user_entry1, user_entry2, user_entry3): # user_entry1, user_entr
 
     c.execute('SELECT * FROM users WHERE username = ?', (username,)) # check if the username already exists
     existing_user = c.fetchone() # fetch the result
-    valid_email_address = re.search(r"^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$", username)  # Check if the formatting of the email address is valid
-    strong_password = re.search(r"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$", password)
+    # valid_email_address = re.search(r"^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$", username)  # Check if the formatting of the email address is valid
+    # strong_password = re.search(r"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$", password)
 
     if existing_user:   # if the username already exists
         messagebox.showinfo("Error", "Username already exists!")    # show an error message
@@ -219,13 +219,13 @@ def create_user(user_entry1, user_entry2, user_entry3): # user_entry1, user_entr
         messagebox.showinfo("Error", "Passwords don't match!")
         user_entry2.delete(0, END)
         user_entry3.delete(0, END)
-    elif not valid_email_address:   # Show an error message and clear "email address" field if the email address is invalid
-        messagebox.showinfo("Error", "Invalid email address!")
-        user_entry1.delete(0, END)
-    elif not strong_password:       # Show an error message and clear "password" and "confirm password" fields if the password is not strong enough
-        messagebox.showinfo("Error", "Password must be at least 8 characters long and contain at least one letter and one number!")
-        user_entry2.delete(0, END)
-        user_entry3.delete(0, END)  
+    # elif not valid_email_address:   # Show an error message and clear "email address" field if the email address is invalid
+    #     messagebox.showinfo("Error", "Invalid email address!")
+    #     user_entry1.delete(0, END)
+    # elif not strong_password:       # Show an error message and clear "password" and "confirm password" fields if the password is not strong enough
+    #     messagebox.showinfo("Error", "Password must be at least 8 characters long and contain at least one letter and one number!")
+    #     user_entry2.delete(0, END)
+    #     user_entry3.delete(0, END)  
     else:   # if the username doesn't exist
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()) # hash the password
         c.execute('INSERT INTO users (username, password, score) VALUES (?, ?, ?)', (username, hashed_password, 0))  # insert the username and password into the database

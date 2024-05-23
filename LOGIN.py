@@ -257,6 +257,7 @@ def login_user(username_entry, password_entry):
         return
 
     stored_password = user[2]   # Get the stored password from the database
+    score = user[3]
 
     if bcrypt.checkpw(password.encode('utf-8'), stored_password):       # Check if the password is correct
         messagebox.showinfo("Success", "Logged in successfully! Welcome, " + username + "!")

@@ -15,6 +15,7 @@ from tkinter import END   # Import END from tkinter to clear the Entry widget
 def load_challenge():                   # Load the challenges from quizz file
     import sunny_customtk               # Import the challenges from our quizz file
     app = sunny_customtk.QuizApp(root)  # Create an instance of QuizApp with our challenges
+    Tk.destroy(root)                    # Destroy the root window
 # Roman's code --------------------------------------------------------------
 
 def init_db():  # Create a database to store user information

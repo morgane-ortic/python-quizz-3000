@@ -4,7 +4,7 @@ from PIL import ImageTk, Image
 from tkinter import messagebox 
 import tkinter as tk
 import sqlite3
-
+# work
 def createTableQuestion():
     conn = sqlite3.connect('user_info.db')
     c = conn.cursor()
@@ -20,7 +20,7 @@ def createTableQuestion():
 
 createTableQuestion()
 
-
+# work
 def newquestion(name, question, correctoutput):
     print(name, question, correctoutput)
     conn = sqlite3.connect('user_info.db')
@@ -95,7 +95,7 @@ def editquestinwindow(id):
     button_save = tk.Button(window, text="save", command=lambda: editquestion(id=id, name=textfeld_name.get(), question=textfeld_question.get(), correctoutput=textfeld_correctoutput.get() ))
     button_save.pack(pady=10)
     window.mainloop()
-
+# not work
 def allquestionwinow():
     conn = sqlite3.connect('user_info.db')
     c = conn.cursor()
@@ -110,16 +110,12 @@ def allquestionwinow():
     while x< allquest.__len__():
         label_name = tk.Label(window, text= allquest[x][1])
         label_name.pack(pady=10)
-        button_commit = tk.Button(window, text="edit", command= lambda: editquestinwindow(allquest[x][0]))
+        button_commit = tk.Button(window, text="edit", command= lambda: editquestinwindow(allquest[x][0])) # on this line a little bug. He have a little problem with the parameter) 
         button_commit.pack(pady=10)
         print(x)
         x = x+1
     
     window.mainloop()
-    # liste aus label mit den namen der question
-    # neben dem labels folgende buttons 
-        # edit, delete
-            # mybe all that delete go to archiv
     return 0
 
 def main_screen():

@@ -4,6 +4,9 @@ from tkinter import scrolledtext
 import io
 import traceback
 from contextlib import redirect_stdout
+from tkinter import *
+import customtkinter
+from PIL import ImageTk, Image
 
 def run_python_code(code):
     # Create a string buffer to capture the output

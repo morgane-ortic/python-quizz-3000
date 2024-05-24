@@ -111,7 +111,7 @@ def show_login_form():
                                       fg_color="#021926")
     my_entry.pack(pady=10)
 
-    my_entry2 = customtkinter.CTkEntry(master=frame, placeholder_text="Password",
+    my_entry2 = customtkinter.CTkEntry(master=frame, placeholder_text="Password", show="*",
                                        height=40, width=300,
                                        corner_radius=20,
                                        border_width=0,

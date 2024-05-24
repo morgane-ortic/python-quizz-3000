@@ -2,6 +2,7 @@ import customtkinter as ctk
 import io
 import traceback
 from contextlib import redirect_stdout
+import sqlite3
 
 
 def run_python_code(code):
@@ -35,7 +36,7 @@ class QuizApp(ctk.CTk):
         user_frame.grid(row=0, column=0, columnspan=2, padx=10, pady=10, sticky="ew")
 
         # Create and place the username label
-        self.user_label = ctk.CTkLabel(user_frame, text=f"Logged in as: {self.username}", font=("Arial", 18), text_color="white")
+        self.user_label = ctk.CTkLabel(user_frame, text=f"Logged in as: {self.username} | Score: {self.get_latest_score()}", font=("Arial", 18), text_color="white")
         self.user_label.grid(row=0, column=0, padx=10, pady=10, sticky="w")
 
         # Create a Text widget for code input (white background)
@@ -126,6 +127,14 @@ class QuizApp(ctk.CTk):
         if self.current_question < len(self.quiz_questions) - 1:
             self.current_question += 1
             self.set_question(self.current_question)
+    
+    def get_latest_score(self):
+        conn = sqlite3.connect('user_info.db')
+        c = conn.cursor()
+        c.execute('SELECT score FROM users WHERE username = ?', (self.username,))
+        score = c.fetchone()[0]
+        conn.close()
+        return score
 
 if __name__ == "__main__":
     ctk.set_appearance_mode("dark")  # Set the appearance mode to dark

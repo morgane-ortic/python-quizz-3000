@@ -1,51 +1,46 @@
-from tkinter import *
-import customtkinter
-from PIL import ImageTk, Image
-from tkinter import messagebox
-import re       # Import regex
-import bcrypt   # Import bcrypt for password hashing
-
-# Roman's code --------------------------------------------------------------
+from tkinter import *           # import tkinter for GUI
+import customtkinter            # import customtkinter for FANCY looking GUI
+from PIL import ImageTk, Image  # import ImageTk and Image from PIL to display images
+from tkinter import messagebox  # import messagebox from tkinter to show messages
+import bcrypt                   # Import bcrypt for password hashing
 
 # 1. Create a database to store user information
 
-import sqlite3
-from tkinter import END
-# End of Roman's code ----------------------------------------------------------
+import sqlite3            # Import sqlite3 to work with SQLite databases    
+from tkinter import END   # Import END from tkinter to clear the Entry widget
 
-def load_challenge():           # Load the challenges from quizz file
-    for widget in root.winfo_children():
-        widget.destroy()
-    import sunny_customtk               # Import the challenges from our quizz file into the current window
-    app = sunny_customtk.QuizApp(root)  # Create an instance of QuizApp with the current Tkinter root window
-# Roman's code --------------------------------------------------------------
+def load_challenge(username):                   # Load the challenges from quizz file
+    import sunny_customtk_2               # Import the challenges from our quizz file
+    app = sunny_customtk_2.QuizApp(root, username)  # Create an instance of QuizApp with our challenges
+    Tk.destroy(root)                    # Destroy the root window
 
-def init_db():
-    conn = sqlite3.connect('user_info.db')
-    c = conn.cursor()
+
+def init_db():  # Create a database to store user information
+    conn = sqlite3.connect('user_info.db')    # Connect to the SQLite database. If it doesn't exist, it will be created.
+    c = conn.cursor()                         # Create a cursor object. Cursors allow Python code to execute SQLite commands
+    # Execute an SQL command. This command creates a new table named 'users' if it doesn't already exist to store our user data.
     c.execute('''CREATE TABLE IF NOT EXISTS users (
                  id INTEGER PRIMARY KEY AUTOINCREMENT,
                  username TEXT UNIQUE NOT NULL,
-                 password TEXT NOT NULL,
-                 score INTEGER DEFAULT 0)''')       # Create a score field of 0, we will update user's future score to there
-    conn.commit()
-    conn.close()
+                 password TEXT NOT NULL,            
+                 score INTEGER DEFAULT 0)''')
+    conn.commit()       # Commit the changes to save them in database
+    conn.close()        # Close the connection to the database
 
 
 # call the function to create the database
 
 init_db()
 
-# End of Roman's code ----------------------------------------------------------
-
-customtkinter.set_appearance_mode("dark")
+# Define appearance of our tkinter window
+customtkinter.set_appearance_mode("dark")           
 customtkinter.set_default_color_theme("dark-blue")
 
-def main_screen():
-    global root, right_frame
-    root = customtkinter.CTk()
-    root.title("PythonBugHunt")
-    root.geometry("1300x800")
+def main_screen():              # Create the main screen
+    global root, right_frame    # Define global variables
+    root = customtkinter.CTk()  # Create a tkinter window
+    root.title("PythonBugHunt") # Name our window
+    root.geometry("1300x800")   # Define the size of the window
 
     # Load background image
     bg_image = ImageTk.PhotoImage(Image.open("pics/background2.jpg"))
@@ -68,9 +63,9 @@ def main_screen():
 
     show_main_buttons()
 
-    root.mainloop()
+    root.mainloop()            # Run the tkinter window
 
-def show_main_buttons():
+def show_main_buttons():       # Create the main buttons
     global right_frame
     # Clear the right_frame
     for widget in right_frame.winfo_children():
@@ -92,18 +87,21 @@ def show_main_buttons():
                                               command=show_register_form)
     register_button.place(relx=0.5, rely=0.6, anchor=CENTER)
 
-def show_login_form():
+def show_login_form():        # Graphic part of the logging in 
     global right_frame
     # Clear the right_frame
     for widget in right_frame.winfo_children():
         widget.destroy()
 
+    # Add a frame to the right_frame
     frame = customtkinter.CTkFrame(master=right_frame, width=400, height=500, corner_radius=0, fg_color="#020c15")
     frame.place(relx=0.5, rely=0.5, anchor=CENTER)
 
+    # Add a label to the frame
     l1 = customtkinter.CTkLabel(master=frame, text="Welcome back", font=("Arial", 34), text_color="white")
     l1.pack(pady=10)
 
+    # Add an entry widget to the frame
     my_entry = customtkinter.CTkEntry(master=frame, placeholder_text="Username",
                                       height=40, width=300,
                                       corner_radius=20,
@@ -111,6 +109,7 @@ def show_login_form():
                                       fg_color="#021926")
     my_entry.pack(pady=10)
 
+    # Add another entry widget
     my_entry2 = customtkinter.CTkEntry(master=frame, placeholder_text="Password",
                                        height=40, width=300,
                                        corner_radius=20,
@@ -118,12 +117,14 @@ def show_login_form():
                                        fg_color="#021926")
     my_entry2.pack(pady=10)
 
+    # Add a login button
     login_button = customtkinter.CTkButton(master=frame, text="Continue", font=("Arial", 18),
                                            height=40, width=300, corner_radius=20,
                                            fg_color="#00A86B", text_color="white", hover_color="#009E5A", cursor="hand2",
                                            command=lambda: login_user(my_entry, my_entry2)) # call the login_user function with the username and password Entry widgets as arguments with username and password as arguments
     login_button.pack(pady=10)
 
+    # Add a sign up label and button
     signup_label = customtkinter.CTkLabel(master=frame, text="Don't have an account?", font=("Arial", 12), text_color="white")
     signup_label.pack(pady=10)
 
@@ -138,7 +139,9 @@ def show_login_form():
                                           text_color="black", hover_color="#f0f0f0", cursor="hand2",
                                           command=show_main_buttons)
 
-def show_register_form():
+    back_button.pack(pady=10)
+
+def show_register_form():   # Graphic part of the registration
     global right_frame
     # Clear the right_frame
     for widget in right_frame.winfo_children():
@@ -186,11 +189,9 @@ def show_register_form():
     back_button.pack(pady=10)
 
 
-# Roman's code --------------------------------------------------------------
-
 # 2. Create a function to create a user account
 
-def create_user(user_entry1, user_entry2, user_entry3): # user_entry1, user_entry2, user_entry3 are Entry widgets
+def create_user(user_entry1, user_entry2, user_entry3): # Logical part of registration. user_entry1, user_entry2, user_entry3 are Entry widgets
     username = user_entry1.get()        # get username from user entry
     password = user_entry2.get()        # get password from user entry
     confirmation = user_entry3.get()    # get password confirmation from user entry
@@ -236,14 +237,12 @@ def create_user(user_entry1, user_entry2, user_entry3): # user_entry1, user_entr
     conn.close()    # close the connection
     del password, confirmation, hashed_password     # Delete the password, confirmation and hashed password from memory for safety
 
-# End of Roman's code ----------------------------------------------------------
-
-
 # Morgane's code --------------------------------------------------------------
 
-def login_user(username_entry, password_entry):
-    username = username_entry.get()
-    password = password_entry.get()
+def login_user(username_entry, password_entry): # logical part of logging in
+    global username
+    username = username_entry.get()     # Get the username from the entry widget (entered by user)
+    password = password_entry.get()     # Get the password from the entry widget (entered by user)
 
     conn = sqlite3.connect('user_info.db')  # Connect to the database
     c = conn.cursor()   # Create a cursor object
@@ -251,16 +250,17 @@ def login_user(username_entry, password_entry):
     c.execute('SELECT * FROM users WHERE username = ?', (username,))    # Select the user from the database
     user = c.fetchone()                                                 # Fetch the result and store it in the user variable
 
+    # If no such user found, show an error message
     if user is None:
         messagebox.showinfo("Error", "User not found!")
         return
 
     stored_password = user[2]   # Get the stored password from the database
-    score = user[3]
+    score = user[3]             # Get the user's score from the database
 
     if bcrypt.checkpw(password.encode('utf-8'), stored_password):       # Check if the password is correct
         messagebox.showinfo("Success", "Logged in successfully! Welcome, " + username + "!")
-        load_challenge()  # Call user page function
+        load_challenge(username)  # Call function that loads the challenges
     else:
         messagebox.showinfo("Error", "Incorrect password!") # Show an error message if the password is incorrect
 
@@ -269,5 +269,6 @@ def login_user(username_entry, password_entry):
 # End of Morgane's code ----------------------------------------------------------
 
 
-if __name__ == "__main__":
+# # Run the main_screen function if the script is run directly
+if __name__ == "__main__":  
     main_screen()

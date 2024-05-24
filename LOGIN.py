@@ -16,9 +16,8 @@ from tkinter import END
 def load_challenge():           # Load the challenges from quizz file
     for widget in root.winfo_children():
         widget.destroy()
-    import quizz_questions
-    quizz_questions.main(root)  # Import the challenges from the main function of our quizz file into the current window
-
+    import sunny_customtk               # Import the challenges from our quizz file into the current window
+    app = sunny_customtk.QuizApp(root)  # Create an instance of QuizApp with the current Tkinter root window
 # Roman's code --------------------------------------------------------------
 
 def init_db():

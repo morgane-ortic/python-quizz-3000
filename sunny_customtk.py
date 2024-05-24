@@ -21,7 +21,11 @@ def run_python_code(code):
     return output
 
 class QuizApp(ctk.CTk):
-    def __init__(self):
+    def __init__(self, root=None):  # Initialize the QuizApp class, with an additional root window argument allowing the use of an existing Tkinter window
+        if root is None:            # If there is no tkinter root window, create one (used when we run this program standalone)
+            root = ctk.CTk()
+        self.root = root
+
         super().__init__()
         self.title("PythonBugHunt")
         self.geometry("1300x800")
@@ -117,6 +121,6 @@ class QuizApp(ctk.CTk):
             self.set_question(self.current_question)
 
 if __name__ == "__main__":
-    ctk.set_appearance_mode("dark")  # Set the appearance mode to dark
-    app = QuizApp()
-    app.mainloop()
+    ctk.set_appearance_mode("dark") # Set the appearance mode to dark
+    app = QuizApp()                 # Create an instance of the QuizApp class
+    app.root.mainloop()             # Start the Tkinter event loop for the root window of the QuizApp instance

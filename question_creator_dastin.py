@@ -106,12 +106,15 @@ def allquestionwinow():
     window = tk.Tk()
     window.title("quizcreator")
     window.geometry("1300x800")
-
+    button_commit_list = []
+    label_name_list = []
     while x< allquest.__len__():
         label_name = tk.Label(window, text= allquest[x][1])
-        label_name.pack(pady=10)
-        button_commit = tk.Button(window, text="edit", command= lambda: editquestinwindow(allquest[x][0]))
-        button_commit.pack(pady=10)
+        label_name_list.append(label_name)
+        label_name_list[x].pack(pady=10)
+        button = tk.Button(window, text="edit", command= lambda: editquestinwindow(allquest[x][0]))
+        button_commit_list.append(button)
+        button_commit_list[x].pack(pady=10)
         print(x)
         x = x+1
     

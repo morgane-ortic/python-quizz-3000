@@ -106,7 +106,7 @@ class QuizApp:
         else:
             self.output_window.insert(tk.END, "\nIncorrect answer. Please try again.")
 
-def main(root):                 # Create a main function to be able to run it from our other file
+def main(root):                 # Create a main function to be able to run the file from our other file
     app = QuizApp(root)
     root.mainloop()
 

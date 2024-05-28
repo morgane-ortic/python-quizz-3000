@@ -3,6 +3,7 @@ import customtkinter            # import customtkinter for FANCY looking GUI
 from PIL import ImageTk, Image  # import ImageTk and Image from PIL to display images
 from tkinter import messagebox  # import messagebox from tkinter to show messages
 import bcrypt                   # Import bcrypt for password hashing
+import subprocess               # Import subprocess to run the level menu
 
 # 1. Create a database to store user information
 
@@ -10,8 +11,7 @@ import sqlite3            # Import sqlite3 to work with SQLite databases
 from tkinter import END   # Import END from tkinter to clear the Entry widget
 
 def load_challenge(username):                   # Load the challenges from quizz file
-    import sunny_customtk_2               # Import the challenges from our quizz file
-    app = sunny_customtk_2.QuizApp(root, username)  # Create an instance of QuizApp with our challenges
+    subprocess.Popen(["python3", "level_menu.py" , username])
     Tk.destroy(root)                    # Destroy the root window
 
 

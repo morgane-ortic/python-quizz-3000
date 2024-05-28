@@ -21,15 +21,12 @@ def run_python_code(code):
     return output
 
 class QuizApp(ctk.CTk):
-    def __init__(self, root, username):  # Initialize the QuizApp class with username and root arguments
-        if root is None:            # If there is no tkinter root window, create one (used when we run this program standalone)
-            root = ctk.CTk()
-        self.root = root
-        self.username = username
+    def __init__(self, username):  # Initialize the QuizApp class with username and root arguments
 
         super().__init__()
+        self.username = username
         self.title("PythonBugHunt")
-        self.geometry("1300x800")
+        self.geometry("1300x840")
 
         # Create a frame for the username label
         user_frame = ctk.CTkFrame(self)
@@ -129,14 +126,23 @@ class QuizApp(ctk.CTk):
             self.set_question(self.current_question)
     
     def get_latest_score(self):
-        conn = sqlite3.connect('user_info.db')
-        c = conn.cursor()
-        c.execute('SELECT score FROM users WHERE username = ?', (self.username,))
-        score = c.fetchone()[0]
-        conn.close()
+        try:
+            conn = sqlite3.connect('user_info.db')
+            c = conn.cursor()
+            try:
+                c.execute('SELECT score FROM users WHERE username = ?', (self.username,))
+                try:
+                    score = c.fetchone()[0]
+                except TypeError:
+                    score = 0
+            except sqlite3.OperationalError:
+                score = 0  # Return 0 if the 'users' table doesn't exist
+            conn.close()
+        except sqlite3.Error:
+            score = 0  # Return 0 if the database connection fails
         return score
 
 if __name__ == "__main__":
     ctk.set_appearance_mode("dark")  # Set the appearance mode to dark
     app = QuizApp(username="Guest")  # Create an instance of the QuizApp class with a username
-    app.root.mainloop()  # Start the Tkinter event loop for the root window of the QuizApp instance
+    app.mainloop()  # Start the Tkinter event loop for the root window of the QuizApp instance

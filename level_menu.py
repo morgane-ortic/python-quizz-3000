@@ -6,7 +6,10 @@ import subprocess   # Import subprocess to run a new script from this menu
 start_frame = time.time()   # get the current time when we start the program in order to calculate frame index for sprite animations
 noi = 3                     # number of images for each of our animations
 frames_per_second = 9       # frames per second of animation
-
+try:
+    username
+except NameError:
+    username = ""              # username to pass to challenge file in case it's not imported from login
 
 
 sourceFileDir = os.path.dirname(os.path.abspath(__file__)) # changes the current working directory of the Python script to the directory where the script is located
@@ -29,7 +32,7 @@ class SpriteSheet:
         image = pygame.transform.scale(image, (width * 3, height * 3))  # Scale if needed
         return image
 
-characters = SpriteSheet('characters.png')
+characters = SpriteSheet('level-menu-img/characters.png')
 
 sprite_width = 16
 sprite_height = 20
@@ -48,13 +51,13 @@ walkRight = [sprites[i] for i in range(30, 33)]
 walkLeft = [sprites[i] for i in range(27, 30)]
 walkUp = [sprites[i] for i in range(33, 36)]
 walkDown = [sprites[i] for i in range(24, 27)]
-bg = pygame.image.load('bg.png')    # import background image
-notice_board_sprite = pygame.image.load('notice-board.png')    # import notice board image
-single_notice_sprite1 = pygame.image.load('single_notice1.png')    # import single_notice images
-single_notice_sprite2 = pygame.image.load('single_notice2.png')    
-single_notice_sprite3 = pygame.image.load('single_notice3.png')
-single_notice_sprite4 = pygame.image.load('single_notice4.png')
-single_notice_sprite5 = pygame.image.load('single_notice5.png')   
+bg = pygame.image.load('level-menu-img/bg.png')    # import background image
+notice_board_sprite = pygame.image.load('level-menu-img/notice-board.png')    # import notice board image
+single_notice_sprite1 = pygame.image.load('level-menu-img/single_notice1.png')    # import single_notice images
+single_notice_sprite2 = pygame.image.load('level-menu-img/single_notice2.png')    
+single_notice_sprite3 = pygame.image.load('level-menu-img/single_notice3.png')
+single_notice_sprite4 = pygame.image.load('level-menu-img/single_notice4.png')
+single_notice_sprite5 = pygame.image.load('level-menu-img/single_notice5.png')   
 
 char = sprites[24]
 
@@ -143,9 +146,10 @@ houses = [
 ]
 
 class NoticeBoard(object):
-    def __init__(self, x, y, board_sprite, notice_sprite, file_to_run):
+    def __init__(self, x, y, level, board_sprite, notice_sprite, file_to_run):
         self.x = x
         self.y = y
+        self.level = level
         self.board_sprite = board_sprite
         self.single_notice_sprite = notice_sprite
         self.file_to_run = file_to_run
@@ -156,11 +160,11 @@ class NoticeBoard(object):
 
 # Add 
 notice_boards = [
-    NoticeBoard(385, 382, notice_board_sprite, single_notice_sprite1, "../quizz-mg.py"),
-    NoticeBoard(900, 382, notice_board_sprite, single_notice_sprite2, "../quizz-mg.py"),
-    NoticeBoard(1375, 311, notice_board_sprite, single_notice_sprite3, "../quizz-mg.py"),
-    NoticeBoard(480, 864, notice_board_sprite, single_notice_sprite4, "../quizz-mg.py"),
-    NoticeBoard(925, 760, notice_board_sprite, single_notice_sprite5, "../quizz-mg.py")
+    NoticeBoard(385, 382, "lvl1", notice_board_sprite, single_notice_sprite1, ".level-menu-img/quizz-mg.py"),
+    NoticeBoard(900, 382, "lvl2", notice_board_sprite, single_notice_sprite2, ".level-menu-img/quizz-mg.py"),
+    NoticeBoard(1375, 311, "lvl3", notice_board_sprite, single_notice_sprite3, ".level-menu-img/quizz-mg.py"),
+    NoticeBoard(480, 864, "lvl4", notice_board_sprite, single_notice_sprite4, ".level-menu-img/quizz-mg.py"),
+    NoticeBoard(925, 760, "lvl5", notice_board_sprite, single_notice_sprite5, ".level-menu-img/quizz-mg.py")
 ]
 
 notice_board_positions = [(board.x, board.y) for board in notice_boards]
@@ -269,7 +273,7 @@ while run:
             if (character_center >= board_left and character_center <= board_right and
                 character_bottom >= board_top and character_top <= board_bottom):
                 # Run a new Python script
-                subprocess.Popen(["python3", board.file_to_run])
+                subprocess.Popen(["python3", "sunny_customtk_2.py" , username, board.level])
 
     if not character.left and not character.right and not character.up and not character.down:
         character.standing = True

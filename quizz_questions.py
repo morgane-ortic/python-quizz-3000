@@ -4,6 +4,31 @@ from tkinter import scrolledtext
 import io
 import traceback
 from contextlib import redirect_stdout
+# ---roman edit - start---
+import sqlite3
+
+def create_database():
+    conn = sqlite3.connect('tasks.db')
+    c = conn.cursor()
+    c.execute('''CREATE TABLE IF NOT EXISTS tasks (
+                 id INTEGER PRIMARY KEY,
+                 level INTEGER,
+                 number INTEGER,
+                 description TEXT,
+                 correct_output TEXT)''')
+    # Add sample tasks
+    tasks = [
+        (1, 1, "print('Hello World!')", "Hello World!\n"),
+        (1, 2, "for i in range(5):\n    print('Hello World', i)", "Hello World 0\nHello World 1\nHello World 2\nHello World 3\nHello World 4\n")
+        # Add more tasks as needed
+    ]
+    c.executemany('INSERT INTO tasks (level, number, description, correct_output) VALUES (?, ?, ?, ?)', tasks)
+    conn.commit()
+    conn.close()
+
+create_database()
+
+# ---roman edit - end---
 
 def run_python_code(code):
     # Create a string buffer to capture the output

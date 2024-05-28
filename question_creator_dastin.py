@@ -6,7 +6,7 @@ import tkinter as tk
 import sqlite3
 
 def createTableQuestion():
-    conn = sqlite3.connect('user_info.db')
+    conn = sqlite3.connect('user_questions.db')
     c = conn.cursor()
     c.execute( '''
                 CREATE TABLE IF NOT EXISTS Question(
@@ -23,7 +23,7 @@ createTableQuestion()
 
 def newquestion(name, question, correctoutput):
     print(name, question, correctoutput)
-    conn = sqlite3.connect('user_info.db')
+    conn = sqlite3.connect('user_questions.db')
     cursor = conn.cursor()
     insert_query = '''
     INSERT INTO Question (name, quiz_question, correct_output)
@@ -97,7 +97,7 @@ def editquestinwindow(id):
     window.mainloop()
 
 def allquestionwinow():
-    conn = sqlite3.connect('user_info.db')
+    conn = sqlite3.connect('user_questions.db')
     c = conn.cursor()
     c.execute('SELECT id, name FROM Question')
     allquest = c.fetchall()

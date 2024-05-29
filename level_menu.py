@@ -5,8 +5,8 @@ import subprocess   # Import subprocess to run a new script from this menu
 import sys          # Import sys to access passed arguments
 
 start_frame = time.time()   # get the current time when we start the program in order to calculate frame index for sprite animations
-noi = 3                     # number of images for each of our animations
-frames_per_second = 9       # frames per second of animation
+anim_noi = 3                # number of images for each of our animations
+anim_fps = 9                # frames per second of animation. Should be a multiple of 3
 space_pressed = False       # sets that space key is not pressed = it will wait for user to press it to perform corresponding code
 
 try:
@@ -100,7 +100,7 @@ class player(object):
         '''Draw the player on the screen'''
         self.frameCounter += 1      # Increment frame counter in every frame
         self.rect.topleft = (self.x, self.y)    # Update the rect position
-        self.walkCount = int((time.time() - start_frame) * frames_per_second % noi)     # Calculate the frame index for animations
+        self.walkCount = int((time.time() - start_frame) * anim_fps % anim_noi)     # Calculate the frame index for animations
 
         direction_map = {'left': walkLeft, 'right': walkRight, 'up': walkUp, 'down': walkDown}
         # Determine the direction
@@ -201,7 +201,7 @@ font = pygame.font.SysFont('comicsans', 30, True)
 character = player(676, 470, 48, 60)     # Starting position and size of player
 run = True                               # Initialize the 'run' variable to True to keep the game running
 while run:
-    clock.tick(30)                      # Set the frame rate to 30 frames per second#
+    clock.tick(27)                      # Set the frame rate of the game. Should be a multiple of 9
     
     for event in pygame.event.get():    # Check for events
         if event.type == pygame.QUIT:   # Check if the user wants to quit the game

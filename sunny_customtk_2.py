@@ -14,13 +14,17 @@ def run_python_code(code):
         # Redirect stdout to the buffer
         with redirect_stdout(buffer):
             exec(code, {})
+        valid_code = True
     except Exception as e:
         # Capture the full traceback and add it to the buffer
         buffer.write(traceback.format_exc())
+        # add status variable 
+        # add a status variable indicating if output points an error
+        valid_code = False   
     # Get the output from the buffer
     output = buffer.getvalue()
     buffer.close()
-    return output
+    return output, valid_code
 
 class QuizApp(ctk.CTk):
     def __init__(self, username, level):  # Initialize the QuizApp class with username and root arguments
@@ -84,21 +88,31 @@ class QuizApp(ctk.CTk):
         user_code = self.code_editor.get("0.0", "end")
 
         # Execute the user's code and capture the output
-        output = run_python_code(user_code)
+        output, valid_code = run_python_code(user_code)
+
+        # Define the 'tag_green' and 'tag_red' tags
+        self.output_window.tag_config("tag_green", foreground="green2")
+        self.output_window.tag_config("tag_red", foreground="red")
+        self.output_window.tag_config("tag_orange", foreground="orange")
 
         # Display the output in the output window
         self.output_window.delete("0.0", "end")
-        self.output_window.insert("0.0", output)
+        # If code is valid, display the output normally
+        if valid_code is True:
+            self.output_window.insert("0.0", output)
+        # If entered code isn't valid, display the output (error traceback) in orange
+        else:
+            self.output_window.insert("0.0", output, "tag_orange")
 
         # Check if the output matches the correct output
         if output.strip() == self.correct_output.strip():
-            self.output_window.insert("end", "\nCorrect answer!")
+            self.output_window.insert("end", "\nCorrect answer!", "tag_green")
             # Move to the next question if available
             if self.current_question < len(self.quiz_questions) - 1:
                 self.current_question += 1
                 self.set_question(self.current_question)
         else:
-            self.output_window.insert("end", "\nIncorrect answer. Please try again.")
+            self.output_window.insert("end", "\nIncorrect answer. Please try again.", "tag_red")
 
     def prev_question(self):
         if self.current_question > 0:

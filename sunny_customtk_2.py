@@ -4,6 +4,7 @@ import traceback
 from contextlib import redirect_stdout
 import sqlite3
 import sys          # Import sys to access passed arguments
+import json         # Import json to access our challenge data from desired json file
 
 
 def run_python_code(code):
@@ -22,10 +23,11 @@ def run_python_code(code):
     return output
 
 class QuizApp(ctk.CTk):
-    def __init__(self, username):  # Initialize the QuizApp class with username and root arguments
+    def __init__(self, username, level):  # Initialize the QuizApp class with username and root arguments
 
         super().__init__()
-        self.username = username
+        self.username = username    # Pass username as parameter to the class to use it inside it
+        self.level = level          # Pass level as parameter to the class to use it inside it
         self.title("PythonBugHunt")
         self.geometry("1300x840")
 
@@ -61,29 +63,11 @@ class QuizApp(ctk.CTk):
         next_button = ctk.CTkButton(button_frame, text="Next", font=("Arial", 18), command=self.next_question, width=150, height=40, corner_radius=10)
         next_button.grid(row=0, column=2, padx=5)
 
-        # Define a list of quiz questions
-        self.quiz_questions = [
-            {
-                "question": "# Fix the code to print 'Hello, World!'\nprint('Hello World')",
-                "code": "print('Hello World')",
-                "output": "Hello, World!\n"
-            },
-            {
-                "question": "# Fix the code to print the sum of two numbers\na = 5\nb = 10\nprint(a, b)",
-                "code": "a = 5\nb = 10\nprint(a + b)",
-                "output": "15\n"
-            },
-            {
-                "question": "# Print only the even numbers from a list:\nnumbers =[1,2,3,4,5]\nfor num in numbers:\nif num % 2 == 0:\print(num)",
-                "code": """
-                numbers = [1,2, 3, 4, 5]
-                for num in numbers:
-                    if num % 2 == 0:
-                        print(num)
-                """,
-                "output": "2\n4\n"
-            }
-        ]
+        # Construct the filename based on the selected level
+        challenge_filename = f"{level}.json"
+        # Open the JSON file and load the data
+        with open(challenge_filename, 'r') as f:
+            self.quiz_questions = json.load(f)
 
         # Set the initial quiz question
         self.current_question = 0
@@ -145,7 +129,7 @@ class QuizApp(ctk.CTk):
 
 if __name__ == "__main__":
     ctk.set_appearance_mode("dark")  # Set the appearance mode to dark
-    imported_username = sys.argv[1] if len(sys.argv) > 1 else "Guest"  # Get the username from the command-line arguments, or use "Guest" as a default value if no username is passed
-    imported_level = sys.argv[2] if len(sys.argv) > 2 else 1 # Get the level from the command-line arguments, or use 0 as a default value if no level is passed
+    imported_username = sys.argv[1] if len(sys.argv) > 1 else "Guest"  # Get the username from the command-line arguments, or use "Guest" as default value if no username is passed
+    imported_level = sys.argv[2] if len(sys.argv) > 2 else "lvl1" # Get the level from the command-line arguments, or use "lvl1" as default value if no level is passed
     app = QuizApp(username = imported_username, level = imported_level)  # Create an instance of the QuizApp class with a username
     app.mainloop()  # Start the Tkinter event loop for the root window of the QuizApp instance

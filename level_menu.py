@@ -7,11 +7,12 @@ import sys          # Import sys to access passed arguments
 start_frame = time.time()   # get the current time when we start the program in order to calculate frame index for sprite animations
 noi = 3                     # number of images for each of our animations
 frames_per_second = 9       # frames per second of animation
+space_pressed = False       # sets that space key is not pressed = it will wait for user to press it to perform corresponding code
 
 try:
-    username = sys.argv[1]
-except NameError:
-    username = ""              # username to pass to challenge file in case it's not imported from login
+    username = sys.argv[1]  # Import username from the arguments passed from login file
+except IndexError:
+    username = "Guest"      # Defines username as "Guest" in case it has not been passed
 
 print(f"Current user is {username}")
 
@@ -259,25 +260,31 @@ while run:
 
         # Check if the space key is pressed
     if keys[pygame.K_SPACE]:
-        for board in notice_boards:
-            # Calculate the coordinates of the corners of the board
-            board_left = board.x
-            board_right = board.x + 113
-            board_top = board.y
-            board_bottom = board.y + 71
 
-            # Calculate the coordinates of the corners of the character
-            character_left = character.x
-            character_right = character.x + character.width
-            character_center = character.x + character.width/2
-            character_top = character.y + 38
-            character_bottom = character.y + character.height
+        if not space_pressed:       # Run this code only if space key is not alread pressed = only once per press
+            for board in notice_boards:
+                # Calculate the coordinates of the corners of the board
+                board_left = board.x
+                board_right = board.x + 113
+                board_top = board.y
+                board_bottom = board.y + 71
 
-            # Check if the character is overlapping with the board
-            if (character_center >= board_left and character_center <= board_right and
-                character_bottom >= board_top and character_top <= board_bottom):
-                # Run a new Python script
-                subprocess.Popen(["python3", "sunny_customtk_2.py" , username, board.level])
+                # Calculate the coordinates of the corners of the character
+                character_left = character.x
+                character_right = character.x + character.width
+                character_center = character.x + character.width/2
+                character_top = character.y + 38
+                character_bottom = character.y + character.height
+
+                # Check if the character is overlapping with the board
+                if (character_center >= board_left and character_center <= board_right and
+                    character_bottom >= board_top and character_top <= board_bottom):
+                    # Run a new Python script
+                    subprocess.Popen(["python3", "sunny_customtk_2.py" , username, board.level])
+
+            space_pressed = True  # Set the flag to True when space is pressed
+        else:
+            space_pressed = False  # Reset the flag when space is released
 
     if not character.left and not character.right and not character.up and not character.down:
         character.standing = True

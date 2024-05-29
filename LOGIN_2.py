@@ -23,7 +23,7 @@ def init_db():  # Create a database to store user information
                  id INTEGER PRIMARY KEY AUTOINCREMENT,
                  username TEXT UNIQUE NOT NULL,
                  password TEXT NOT NULL,            
-                 score INTEGER DEFAULT 0,)''')
+                 score INTEGER DEFAULT 0)''')
     conn.commit()       # Commit the changes to save them in database
     conn.close()        # Close the connection to the database
 

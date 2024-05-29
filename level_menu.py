@@ -14,20 +14,20 @@ try:
 except IndexError:
     username = "Guest"      # Defines username as "Guest" in case it has not been passed
 
-print(f"Current user is {username}")
-
 
 sourceFileDir = os.path.dirname(os.path.abspath(__file__)) # changes the current working directory of the Python script to the directory where the script is located
 os.chdir(sourceFileDir)
 
-pygame.init()
+pygame.init()   # Initialize pygame
 
-win = pygame.display.set_mode((1536,1000))
+win = pygame.display.set_mode((1536,1000))  # Set the window size
 
-pygame.display.set_caption("First Game")
+pygame.display.set_caption("First Game")    # Set the window title
 
 class SpriteSheet:
+    '''Create class to extract images from sprite sheet'''
     def __init__(self, filename):
+        '''Initialize the sprite sheet object with the provided file name'''
         self.spritesheet = pygame.image.load(filename).convert_alpha()
 
     def get_image(self, x, y, width, height):
@@ -37,11 +37,11 @@ class SpriteSheet:
         image = pygame.transform.scale(image, (width * 3, height * 3))  # Scale if needed
         return image
 
+# Load the sprite sheet and divide it to extract individual character sprites
 characters = SpriteSheet('level-menu-img/characters.png')
-
 sprite_width = 16
 sprite_height = 20
-sprites = []
+sprites = []    # Create list to store all the character sprites
 
 for k in range(3):  # For each section
     for j in range(4):  # For each row
@@ -50,15 +50,16 @@ for k in range(3):  # For each section
             y = j * sprite_height
             print(f"Getting sprite at x={x}, y={y}")
             image = characters.get_image(x, y, sprite_width, sprite_height)
-            sprites.append(image)
+            sprites.append(image)   # Add the sprite to the list
 
+# Define the animations = which sprites to use for each direction
 walkRight = [sprites[i] for i in range(30, 33)]
 walkLeft = [sprites[i] for i in range(27, 30)]
 walkUp = [sprites[i] for i in range(33, 36)]
 walkDown = [sprites[i] for i in range(24, 27)]
 bg = pygame.image.load('level-menu-img/bg.png')    # import background image
-notice_board_sprite = pygame.image.load('level-menu-img/notice-board.png')    # import notice board image
-single_notice_sprite1 = pygame.image.load('level-menu-img/single_notice1.png')    # import single_notice images
+notice_board_sprite = pygame.image.load('level-menu-img/notice-board.png')          # import notice board image
+single_notice_sprite1 = pygame.image.load('level-menu-img/single_notice1.png')      # import notice images with each level name
 single_notice_sprite2 = pygame.image.load('level-menu-img/single_notice2.png')    
 single_notice_sprite3 = pygame.image.load('level-menu-img/single_notice3.png')
 single_notice_sprite4 = pygame.image.load('level-menu-img/single_notice4.png')
@@ -71,10 +72,10 @@ clock = pygame.time.Clock()
 # music = pygame.mixer.music.load('music.mp3')
 # pygame.mixer.music.play(-1)
 
-score = 0
-
 class player(object):
+    '''Create a player class to represent the character in the game'''
     def __init__(self,x,y,width,height):
+        '''Initialize the player object with its attributes'''
         self.x = x
         self.y = y
         self.width = width
@@ -96,10 +97,10 @@ class player(object):
         self.rect = pygame.Rect(x, y, width, height)  # create and assign a rect object to player
 
     def draw(self, win):
-        self.frameCounter += 1  # Increment frame counter in every frame
-        self.rect.topleft = (self.x, self.y)  # Update the rect position
-
-        self.walkCount = int((time.time() - start_frame) * frames_per_second % noi) # Calculate the frame index for animations
+        '''Draw the player on the screen'''
+        self.frameCounter += 1      # Increment frame counter in every frame
+        self.rect.topleft = (self.x, self.y)    # Update the rect position
+        self.walkCount = int((time.time() - start_frame) * frames_per_second % noi)     # Calculate the frame index for animations
 
         direction_map = {'left': walkLeft, 'right': walkRight, 'up': walkUp, 'down': walkDown}
         # Determine the direction
@@ -122,14 +123,16 @@ class player(object):
         self.hitbox = (self.x + 17, self.y + 11, 29, 52)
 
 class House(object):
+    '''Create a house class to represent the buildings and obstacles in the game'''
     def __init__(self, x, y, width, height):
-        self.rect = pygame.Rect(x, y, width, height)
+        '''Initialize the house object with its attributes'''
+        self.rect = pygame.Rect(x, y, width, height)    # Create a rect object for the house to deal with collisions
 
 # Create some houses
 houses = [                 
     # Inn
-    House(380, 66, 629, 291),
-    House(531, 359, 331, 97),
+    House(380, 66, 629, 291),   # Create a house object with it coordinates on the screen and its size
+    House(531, 359, 331, 97),   # Numbers are, starting from top-left corner: x, y, width, height
 
     # shop
     House(234, 551, 346, 243),
@@ -151,34 +154,37 @@ houses = [
 ]
 
 class NoticeBoard(object):
-    def __init__(self, x, y, level, board_sprite, notice_sprite, file_to_run):
+    '''Create a notice board class to represent the notice boards in the game'''
+    def __init__(self, x, y, level, board_sprite, notice_sprite):
+        '''Initialize the notice board object with its attributes'''
         self.x = x
         self.y = y
         self.level = level
         self.board_sprite = board_sprite
         self.single_notice_sprite = notice_sprite
-        self.file_to_run = file_to_run
 
     def draw(self, win):
+        '''Draw the notice board on the screen'''
         win.blit(self.board_sprite, (self.x, self.y))
         win.blit(self.single_notice_sprite, (self.x, self.y))
 
-# Add 
+# Add notice boards
 notice_boards = [
-    NoticeBoard(385, 382, "lvl1", notice_board_sprite, single_notice_sprite1, ".level-menu-img/quizz-mg.py"),
-    NoticeBoard(900, 382, "lvl2", notice_board_sprite, single_notice_sprite2, ".level-menu-img/quizz-mg.py"),
-    NoticeBoard(1375, 311, "lvl3", notice_board_sprite, single_notice_sprite3, ".level-menu-img/quizz-mg.py"),
-    NoticeBoard(480, 864, "lvl4", notice_board_sprite, single_notice_sprite4, ".level-menu-img/quizz-mg.py"),
-    NoticeBoard(925, 760, "lvl5", notice_board_sprite, single_notice_sprite5, ".level-menu-img/quizz-mg.py")
+    NoticeBoard(385, 382, "lvl1", notice_board_sprite, single_notice_sprite1),
+    NoticeBoard(900, 382, "lvl2", notice_board_sprite, single_notice_sprite2),
+    NoticeBoard(1375, 311, "lvl3", notice_board_sprite, single_notice_sprite3),
+    NoticeBoard(480, 864, "lvl4", notice_board_sprite, single_notice_sprite4),
+    NoticeBoard(925, 760, "lvl5", notice_board_sprite, single_notice_sprite5)
 ]
 
-notice_board_positions = [(board.x, board.y) for board in notice_boards]
+notice_board_positions = [(board.x, board.y) for board in notice_boards]    # Get the positions of each notice board
 
 # Add rect. for collision to notice boards
 for pos in notice_board_positions:
     houses.append(House(pos[0], pos[1], notice_board_sprite.get_width(), notice_board_sprite.get_height()))
 
 def redrawGameWindow():
+    '''Draw the game window with all the elements on it'''
     win.blit(bg, (0,0))                         # Draw the background    
     for board in notice_boards:                 # Draw each notice board
         board.draw(win)
@@ -187,39 +193,56 @@ def redrawGameWindow():
     # Draw the player's rectangle for debugging
     # pygame.draw.rect(win, (255, 0, 0), (character.x, character.y, character.width, character.height), 1)
 
-    pygame.display.update()
+    pygame.display.update()                    # Update the display
 
 
 #mainloop
 font = pygame.font.SysFont('comicsans', 30, True)
-character = player(676, 470, 48, 60)          # Starting position and size of player
-shootLoop = 0
-run = True
+character = player(676, 470, 48, 60)     # Starting position and size of player
+run = True                               # Initialize the 'run' variable to True to keep the game running
 while run:
-    clock.tick(30)
-
-    if shootLoop > 0:
-        shootLoop += 1
-    if shootLoop > 3:
-        shootLoop = 0
+    clock.tick(30)                      # Set the frame rate to 30 frames per second#
     
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
+    for event in pygame.event.get():    # Check for events
+        if event.type == pygame.QUIT:   # Check if the user wants to quit the game
             run = False
 
-    keys = pygame.key.get_pressed()
+    keys = pygame.key.get_pressed()     # Get the keys that are pressed
 
     # Calculate the player's new position
     new_x = character.x
     new_y = character.y
+    # Check if the left key is pressed and the player is not at the left edge of the screen
     if keys[pygame.K_LEFT] and character.x > character.vel:
-        new_x -= character.vel
+        new_x -= character.vel  # Update the new x position
+        character.left = True   
+        character.right = False
+        character.standing = False
+    # Check if the right key is pressed and the player is not at the right edge of the screen
     elif keys[pygame.K_RIGHT] and character.x < 1536 - character.width - character.vel:
         new_x += character.vel
+        character.right = True
+        character.left = False
+        character.standing = False
+    else:
+        character.left = False
+        character.right = False
+
+    # Check if the up key is pressed and the player is not at the top edge of the screen
     if keys[pygame.K_UP] and character.y > character.velY:
         new_y -= character.velY
+        character.up = True
+        character.down = False
+        character.standing = False
+    # Check if the down key is pressed and the player is not at the bottom edge of the screen
     elif keys[pygame.K_DOWN] and character.y + character.height + character.velY < 1000:
         new_y += character.velY
+        character.down = True
+        character.up = False
+        character.standing = False
+    else:
+        character.up = False
+        character.down = False
 
     # Check if the new position would collide with a house
     player_rect = pygame.Rect(new_x, new_y + 42, character.width, character.height - 42)
@@ -227,38 +250,8 @@ while run:
         # If not colliding with any house, update the player's position
         character.x = new_x
         character.y = new_y
-    
 
-
-    if keys[pygame.K_LEFT] and character.x > character.vel:
-        character.left = True
-        character.right = False
-        character.standing = False
-    else:
-        character.left = False
-
-    if keys[pygame.K_RIGHT] and character.x < 1536 - character.width - character.vel:
-        character.right = True
-        character.left = False
-        character.standing = False
-    else:
-        character.right = False
-
-    if keys[pygame.K_UP] and character.y > character.velY:
-        character.up = True
-        character.down = False
-        character.standing = False
-    else:
-        character.up = False
-
-    if keys[pygame.K_DOWN] and character.y + character.height + character.velY < 1000:
-        character.down = True
-        character.up = False
-        character.standing = False
-    else:
-        character.down = False
-
-        # Check if the space key is pressed
+    # Check if the space key is pressed
     if keys[pygame.K_SPACE]:
 
         if not space_pressed:       # Run this code only if space key is not alread pressed = only once per press
@@ -280,19 +273,20 @@ while run:
                 if (character_center >= board_left and character_center <= board_right and
                     character_bottom >= board_top and character_top <= board_bottom):
                     # Run a new Python script
-                    subprocess.Popen(["python3", "sunny_customtk_2.py" , username, board.level])
+                    subprocess.Popen(["python3", "sunny_customtk_2.py" , username, board.level])    # Open the quiz script with the selected level in a new window
+                    time.sleep(0.3)
+                    pygame.quit()       # Close current window
 
-            space_pressed = True  # Set the flag to True when space is pressed
-        else:
-            space_pressed = False  # Reset the flag when space is released
+            space_pressed = True    # Set the flag to True when space is pressed
+            time.sleep(0.2)         # Add a small delay to prevent multiple script executions on a single space key press
+        elif space_pressed:         # Check if the space key is released
+            space_pressed = False   # Reset the flag when space is released
 
-    if not character.left and not character.right and not character.up and not character.down:
+    if not character.left and not character.right and not character.up and not character.down:  # Define when character is standing
         character.standing = True
         character.walkCount = 0
 
-    if not(character.standing):
-        character.walkCount += 1
+    if not(character.standing):     # Define when character is walking
+        character.walkCount += 1    # Increment the walk count
             
-    redrawGameWindow()
-
-pygame.quit()
+    redrawGameWindow()      # Redraw the game window = update the screen at every frame

@@ -29,7 +29,7 @@ class QuizApp(ctk.CTk):
 
         super().__init__()
         self.title("PythonBugHunt")
-        self.geometry("1300x800")
+        self.geometry("1300x850")
 
         # Create a frame for the username label
         user_frame = ctk.CTkFrame(self)

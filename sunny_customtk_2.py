@@ -20,9 +20,10 @@ def run_python_code(code):
     buffer.close()
     return output
 
+
 class QuizApp(ctk.CTk):
-    def __init__(self, root, username):  # Initialize the QuizApp class with username and root arguments
-        if root is None:            # If there is no tkinter root window, create one (used when we run this program standalone)
+    def __init__(self, root, username):
+        if root is None:
             root = ctk.CTk()
         self.root = root
         self.username = username
@@ -36,11 +37,18 @@ class QuizApp(ctk.CTk):
         user_frame.grid(row=0, column=0, columnspan=2, padx=10, pady=10, sticky="ew")
 
         # Create and place the username label
-        self.user_label = ctk.CTkLabel(user_frame, text=f"Logged in as: {self.username} | Score: {self.get_latest_score()}", font=("Arial", 18), text_color="white")
+        self.user_label = ctk.CTkLabel(
+            user_frame,
+            text=f"Logged in as: {self.username} | Score: {self.get_latest_score()}",
+            font=("Arial", 18),
+            text_color="white"
+        )
         self.user_label.grid(row=0, column=0, padx=10, pady=10, sticky="w")
 
         # Create a Text widget for code input (white background)
-        self.code_editor = ctk.CTkTextbox(self, width=650, height=700, font=("Consolas", 16), text_color="black", wrap="word", fg_color="white")
+        self.code_editor = ctk.CTkTextbox(
+            self, width=650, height=700, font=("Consolas", 16), text_color="black", wrap="word", fg_color="white"
+        )
         self.code_editor.grid(row=1, column=0, padx=14, pady=10, sticky="nsew")
 
         # Create a Text widget for displaying output (dark background)
@@ -52,15 +60,28 @@ class QuizApp(ctk.CTk):
         button_frame.grid(row=2, column=0, columnspan=2, padx=13, pady=0, sticky="ew")
 
         # Create a "Prev" button
-        prev_button = ctk.CTkButton(button_frame, text="Prev", font=("Arial", 18), command=self.prev_question, width=150, height=40, corner_radius=10)
+        prev_button = ctk.CTkButton(
+            button_frame, text="Prev", font=("Arial", 18), command=self.prev_question, width=150, height=40, corner_radius=10
+        )
         prev_button.grid(row=0, column=0, padx=0)
 
         # Create a "Run" button
-        run_button = ctk.CTkButton(button_frame, text="Run", font=("Arial", 18), command=self.run_code, width=150, height=40, corner_radius=10, fg_color="green")
+        run_button = ctk.CTkButton(
+            button_frame,
+            text="Run",
+            font=("Arial", 18),
+            command=self.run_code,
+            width=150,
+            height=40,
+            corner_radius=10,
+            fg_color="green"
+        )
         run_button.grid(row=0, column=1, padx=5)
 
         # Create a "Next" button
-        next_button = ctk.CTkButton(button_frame, text="Next", font=("Arial", 18), command=self.next_question, width=150, height=40, corner_radius=10)
+        next_button = ctk.CTkButton(
+            button_frame, text="Next", font=("Arial", 18), command=self.next_question, width=150, height=40, corner_radius=10
+        )
         next_button.grid(row=0, column=2, padx=5)
 
         # Define a list of quiz questions
@@ -111,12 +132,14 @@ class QuizApp(ctk.CTk):
         # Check if the output matches the correct output
         if output.strip() == self.correct_output.strip():
             self.output_window.insert("end", "\nCorrect answer!")
+            self.update_score(50)  # Increase score by 50 for a correct answer
             # Move to the next question if available
             if self.current_question < len(self.quiz_questions) - 1:
                 self.current_question += 1
                 self.set_question(self.current_question)
         else:
             self.output_window.insert("end", "\nIncorrect answer. Please try again.")
+            self.update_score(-5)  # Decrease score by 5 for an incorrect answer
 
     def prev_question(self):
         if self.current_question > 0:
@@ -127,7 +150,7 @@ class QuizApp(ctk.CTk):
         if self.current_question < len(self.quiz_questions) - 1:
             self.current_question += 1
             self.set_question(self.current_question)
-    
+
     def get_latest_score(self):
         conn = sqlite3.connect('user_info.db')
         c = conn.cursor()
@@ -136,7 +159,17 @@ class QuizApp(ctk.CTk):
         conn.close()
         return score
 
+    def update_score(self, points):
+        conn = sqlite3.connect('user_info.db')
+        c = conn.cursor()
+        c.execute('UPDATE users SET score = score + ? WHERE username = ?', (points, self.username))
+        conn.commit()
+        conn.close()
+        # Update the label to reflect the new score
+        self.user_label.configure(text=f"Logged in as: {self.username} | Score: {self.get_latest_score()}")
+
+
 if __name__ == "__main__":
     ctk.set_appearance_mode("dark")  # Set the appearance mode to dark
-    app = QuizApp(username="Guest")  # Create an instance of the QuizApp class with a username
+    app = QuizApp(None, username="Guest")  # Create an instance of the QuizApp class with a username
     app.root.mainloop()  # Start the Tkinter event loop for the root window of the QuizApp instance

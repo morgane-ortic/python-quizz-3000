@@ -2,17 +2,18 @@ import os           # Import the os module to use relative paths to link our fil
 import pygame       # Import pygame to program our game menu
 import time         # Import time to control the speed of our character animation
 import subprocess   # Import subprocess to run a new script from this menu
+import sys          # Import sys to access passed arguments
 
 start_frame = time.time()   # get the current time when we start the program in order to calculate frame index for sprite animations
 noi = 3                     # number of images for each of our animations
 frames_per_second = 9       # frames per second of animation
 
 try:
-    username
+    username = sys.argv[1]
 except NameError:
     username = ""              # username to pass to challenge file in case it's not imported from login
 
-    print(f"Current user is {username}")
+print(f"Current user is {username}")
 
 
 sourceFileDir = os.path.dirname(os.path.abspath(__file__)) # changes the current working directory of the Python script to the directory where the script is located

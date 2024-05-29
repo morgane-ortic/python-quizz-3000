@@ -3,6 +3,7 @@ import io
 import traceback
 from contextlib import redirect_stdout
 import sqlite3
+import sys          # Import sys to access passed arguments
 
 
 def run_python_code(code):
@@ -144,5 +145,7 @@ class QuizApp(ctk.CTk):
 
 if __name__ == "__main__":
     ctk.set_appearance_mode("dark")  # Set the appearance mode to dark
-    app = QuizApp(username="Guest")  # Create an instance of the QuizApp class with a username
+    imported_username = sys.argv[1] if len(sys.argv) > 1 else "Guest"  # Get the username from the command-line arguments, or use "Guest" as a default value if no username is passed
+    imported_level = sys.argv[2] if len(sys.argv) > 2 else 1 # Get the level from the command-line arguments, or use 0 as a default value if no level is passed
+    app = QuizApp(username = imported_username, level = imported_level)  # Create an instance of the QuizApp class with a username
     app.mainloop()  # Start the Tkinter event loop for the root window of the QuizApp instance

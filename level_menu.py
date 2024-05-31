@@ -273,7 +273,7 @@ while run:
                 if (character_center >= board_left and character_center <= board_right and
                     character_bottom >= board_top and character_top <= board_bottom):
                     # Run a new Python script
-                    subprocess.Popen(["python3", "sunny_customtk_2.py" , username, board.level])    # Open the quiz script with the selected level in a new window
+                    subprocess.Popen(["python3", "quizz_app.py" , username, board.level])    # Open the quiz script with the selected level in a new window
                     time.sleep(0.3)
                     pygame.quit()       # Close current window
 

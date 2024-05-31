@@ -22,7 +22,7 @@ pygame.init()   # Initialize pygame
 
 win = pygame.display.set_mode((1536,1000))  # Set the window size
 
-pygame.display.set_caption("First Game")    # Set the window title
+pygame.display.set_caption("Python Quest")    # Set the window title
 
 class SpriteSheet:
     '''Create class to extract images from sprite sheet'''
@@ -168,6 +168,7 @@ class NoticeBoard(object):
         win.blit(self.board_sprite, (self.x, self.y))
         win.blit(self.single_notice_sprite, (self.x, self.y))
 
+
 # Add notice boards
 notice_boards = [
     NoticeBoard(385, 382, "lvl1", notice_board_sprite, single_notice_sprite1),
@@ -183,11 +184,50 @@ notice_board_positions = [(board.x, board.y) for board in notice_boards]    # Ge
 for pos in notice_board_positions:
     houses.append(House(pos[0], pos[1], notice_board_sprite.get_width(), notice_board_sprite.get_height()))
 
+def char_facing_board():
+    '''Check if the character is facing a notice board'''
+    for board in notice_boards:
+        # Calculate the coordinates of the corners of the board
+        board_left = board.x
+        board_right = board.x + 113
+        board_top = board.y
+        board_bottom = board.y + 71
+
+        # Calculate the coordinates of the corners of the character
+        character_left = character.x
+        character_right = character.x + character.width
+        character_center = character.x + character.width/2
+        character_top = character.y + 38
+        character_bottom = character.y + character.height
+
+        # Check if the character is overlapping with the board
+        if (character_center >= board_left and character_center <= board_right and
+            character_bottom >= board_top and character_top <= board_bottom):
+            return board
+
+    return None
+
+
+def text_box(message, x, y):
+    '''Create a text box giving instructions to user, here to press SPACE to start the challenge'''
+    font = pygame.font.Font("level-menu-img/Berenika-Bold.ttf", 20)           # Set the font and size
+    text = font.render(message, 1, (255,255,255))     # Create the text
+    text_rect = text.get_rect(center=(x, y))    # Set the position of the text
+    pygame.draw.rect(win, (40, 40, 40), text_rect.inflate(10, 10))   # Draw a rectangle around the text
+    win.blit(text, text_rect)                   # Display the text on the screen
+
+
+
 def redrawGameWindow():
     '''Draw the game window with all the elements on it'''
     win.blit(bg, (0,0))                         # Draw the background    
     for board in notice_boards:                 # Draw each notice board
         board.draw(win)
+    # Display a message if the character is facing a notice board
+    board = char_facing_board()
+    if board is not None:
+        text_box('Press SPACE to start this challenge', character.x + 20, character.y - 60)
+
     character.draw(win)                         # Draw the character
 
     # Draw the player's rectangle for debugging
@@ -254,28 +294,14 @@ while run:
     # Check if the space key is pressed
     if keys[pygame.K_SPACE]:
 
-        if not space_pressed:       # Run this code only if space key is not alread pressed = only once per press
-            for board in notice_boards:
-                # Calculate the coordinates of the corners of the board
-                board_left = board.x
-                board_right = board.x + 113
-                board_top = board.y
-                board_bottom = board.y + 71
-
-                # Calculate the coordinates of the corners of the character
-                character_left = character.x
-                character_right = character.x + character.width
-                character_center = character.x + character.width/2
-                character_top = character.y + 38
-                character_bottom = character.y + character.height
-
-                # Check if the character is overlapping with the board
-                if (character_center >= board_left and character_center <= board_right and
-                    character_bottom >= board_top and character_top <= board_bottom):
-                    # Run a new Python script
-                    subprocess.Popen(["python3", "quizz_app.py" , username, board.level])    # Open the quiz script with the selected level in a new window
-                    time.sleep(0.3)
-                    pygame.quit()       # Close current window
+        if not space_pressed:               # Run this code only if space key is not alread pressed = only once per press
+            board = char_facing_board()     # Get the board that the character is facing
+            if board is not None:
+                # Run a new Python script
+                subprocess.Popen(["python3", "quizz_app.py" , username, board.level])    # Open the quiz script with the selected level in a new window
+                time.sleep(0.3)
+                pygame.quit()       # Close current window
+                run = False         # Stop the game loop
 
             space_pressed = True    # Set the flag to True when space is pressed
             time.sleep(0.2)         # Add a small delay to prevent multiple script executions on a single space key press

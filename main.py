@@ -117,12 +117,21 @@ def show_login_form():        # Graphic part of the logging in
                                        fg_color="#021926")
     my_entry2.pack(pady=10)
 
+
+    def on_enter_key_login(event = None):
+        login_user(my_entry, my_entry2)
+
+
     # Add a login button
     login_button = customtkinter.CTkButton(master=frame, text="Continue", font=("Arial", 18),
                                            height=40, width=300, corner_radius=20,
                                            fg_color="#00A86B", text_color="white", hover_color="#009E5A", cursor="hand2",
                                            command=lambda: login_user(my_entry, my_entry2)) # call the login_user function with the username and password Entry widgets as arguments with username and password as arguments
     login_button.pack(pady=10)
+
+# Bind the Enter key to the on_enter_key_login function
+    root.bind("<Return>", on_enter_key_login)
+
 
     # Add a sign up label and button
     signup_label = customtkinter.CTkLabel(master=frame, text="Don't have an account?", font=("Arial", 12), text_color="white")
@@ -176,11 +185,18 @@ def show_register_form():   # Graphic part of the registration
                                          fg_color="#021926")
     user_entry3.pack(pady=10)
 
+    def on_enter_key_create(event = None):
+        create_user(user_entry1, user_entry2, user_entry3)
+
+# Create the sign-up button
     create_button = customtkinter.CTkButton(master=frame, text="Sign Up", font=("Arial", 18),
-                                            height=40, width=300, corner_radius=20,
-                                            fg_color="#00A86B", text_color="white", hover_color="#009E5A", cursor="hand2",
-                                            command=lambda: create_user(user_entry1, user_entry2, user_entry3))
+                                        height=40, width=300, corner_radius=20,
+                                        fg_color="#00A86B", text_color="white", hover_color="#009E5A", cursor="hand2",
+                                        command=lambda: create_user(user_entry1, user_entry2, user_entry3))
     create_button.pack(pady=10)
+
+# Bind the Enter key to the on_enter_key_create function
+    root.bind("<Return>", on_enter_key_create)
 
     back_button = customtkinter.CTkButton(master=frame, text="Back", font=("Arial", 12),
                                           height=30, width=100, corner_radius=20, fg_color="white",
@@ -267,6 +283,7 @@ def login_user(username_entry, password_entry): # logical part of logging in
     conn.close()    # Close the connection to database
 
 # End of Morgane's code ----------------------------------------------------------
+
 
 
 # # Run the main_screen function if the script is run directly

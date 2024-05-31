@@ -213,7 +213,13 @@ def text_box(message, x, y):
     font = pygame.font.Font("level-menu-img/Berenika-Bold.ttf", 20)           # Set the font and size
     text = font.render(message, 1, (255,255,255))     # Create the text
     text_rect = text.get_rect(center=(x, y))    # Set the position of the text
-    pygame.draw.rect(win, (40, 40, 40), text_rect.inflate(10, 10))   # Draw a rectangle around the text
+
+    # Ensure the text box is within the window boundaries + add a margin between text box and window edge
+    txtbx_margin = 12
+    text_rect.x = max(min(text_rect.x, win.get_width() - text_rect.width - txtbx_margin), txtbx_margin)
+    text_rect.y = max(min(text_rect.y, win.get_height() - text_rect.height - txtbx_margin), txtbx_margin)
+
+    pygame.draw.rect(win, (40, 40, 40), text_rect.inflate(12, 12))   # Draw a rectangle around the text
     win.blit(text, text_rect)                   # Display the text on the screen
 
 
@@ -226,7 +232,7 @@ def redrawGameWindow():
     # Display a message if the character is facing a notice board
     board = char_facing_board()
     if board is not None:
-        text_box('Press SPACE to start this challenge', character.x + 20, character.y - 60)
+        text_box('Press SPACE to start this challenge', board.x + 56, board.y - 25)
 
     character.draw(win)                         # Draw the character
 

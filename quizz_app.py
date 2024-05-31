@@ -3,6 +3,8 @@ import io
 import traceback
 from contextlib import redirect_stdout
 import sqlite3
+import sys          # Import sys to access passed arguments
+import json         # Import json to access our challenge data from desired json file
 
 
 def run_python_code(code):
@@ -12,23 +14,25 @@ def run_python_code(code):
         # Redirect stdout to the buffer
         with redirect_stdout(buffer):
             exec(code, {})
+        valid_code = True
     except Exception as e:
         # Capture the full traceback and add it to the buffer
         buffer.write(traceback.format_exc())
+        # add status variable 
+        # add a status variable indicating if output points an error
+        valid_code = False   
     # Get the output from the buffer
     output = buffer.getvalue()
     buffer.close()
-    return output
+    return output, valid_code
 
 
 class QuizApp(ctk.CTk):
-    def __init__(self, root, username):
-        if root is None:
-            root = ctk.CTk()
-        self.root = root
-        self.username = username
+    def __init__(self, username, level):  # Initialize the QuizApp class with username and root arguments
 
         super().__init__()
+        self.username = username    # Pass username as parameter to the class to use it inside it
+        self.level = level          # Pass level as parameter to the class to use it inside it
         self.title("PythonBugHunt")
         self.geometry("1300x850")
 
@@ -84,29 +88,11 @@ class QuizApp(ctk.CTk):
         )
         next_button.grid(row=0, column=2, padx=5)
 
-        # Define a list of quiz questions
-        self.quiz_questions = [
-            {
-                "question": "# Fix the code to print 'Hello, World!'\nprint('Hello World')",
-                "code": "print('Hello World')",
-                "output": "Hello, World!\n"
-            },
-            {
-                "question": "# Fix the code to print the sum of two numbers\na = 5\nb = 10\nprint(a, b)",
-                "code": "a = 5\nb = 10\nprint(a + b)",
-                "output": "15\n"
-            },
-            {
-                "question": "# Print only the even numbers from a list:\nnumbers =[1,2,3,4,5]\nfor num in numbers:\nif num % 2 == 0:\print(num)",
-                "code": """
-                numbers = [1,2, 3, 4, 5]
-                for num in numbers:
-                    if num % 2 == 0:
-                        print(num)
-                """,
-                "output": "2\n4\n"
-            }
-        ]
+        # Construct the filename based on the selected level
+        challenge_filename = f"{level}.json"
+        # Open the JSON file and load the data
+        with open(challenge_filename, 'r') as f:
+            self.quiz_questions = json.load(f)
 
         # Set the initial quiz question
         self.current_question = 0
@@ -123,22 +109,32 @@ class QuizApp(ctk.CTk):
         user_code = self.code_editor.get("0.0", "end")
 
         # Execute the user's code and capture the output
-        output = run_python_code(user_code)
+        output, valid_code = run_python_code(user_code)
+
+        # Define the 'tag_green' and 'tag_red' tags
+        self.output_window.tag_config("tag_green", foreground="green2")
+        self.output_window.tag_config("tag_red", foreground="red")
+        self.output_window.tag_config("tag_orange", foreground="orange")
 
         # Display the output in the output window
         self.output_window.delete("0.0", "end")
-        self.output_window.insert("0.0", output)
+        # If code is valid, display the output normally
+        if valid_code is True:
+            self.output_window.insert("0.0", output)
+        # If entered code isn't valid, display the output (error traceback) in orange
+        else:
+            self.output_window.insert("0.0", output, "tag_orange")
 
         # Check if the output matches the correct output
         if output.strip() == self.correct_output.strip():
-            self.output_window.insert("end", "\nCorrect answer!")
+            self.output_window.insert("end", "\nCorrect answer!", "tag_green")
             self.update_score(50)  # Increase score by 50 for a correct answer
             # Move to the next question if available
             if self.current_question < len(self.quiz_questions) - 1:
                 self.current_question += 1
                 self.set_question(self.current_question)
         else:
-            self.output_window.insert("end", "\nIncorrect answer. Please try again.")
+            self.output_window.insert("end", "\nIncorrect answer. Please try again.", "tag_red")
             self.update_score(-5)  # Decrease score by 5 for an incorrect answer
 
     def prev_question(self):
@@ -152,11 +148,20 @@ class QuizApp(ctk.CTk):
             self.set_question(self.current_question)
 
     def get_latest_score(self):
-        conn = sqlite3.connect('user_info.db')
-        c = conn.cursor()
-        c.execute('SELECT score FROM users WHERE username = ?', (self.username,))
-        score = c.fetchone()[0]
-        conn.close()
+        try:
+            conn = sqlite3.connect('user_info.db')
+            c = conn.cursor()
+            try:
+                c.execute('SELECT score FROM users WHERE username = ?', (self.username,))
+                try:
+                    score = c.fetchone()[0]
+                except TypeError:
+                    score = 0
+            except sqlite3.OperationalError:
+                score = 0  # Return 0 if the 'users' table doesn't exist
+            conn.close()
+        except sqlite3.Error:
+            score = 0  # Return 0 if the database connection fails
         return score
 
     def update_score(self, points):
@@ -171,5 +176,7 @@ class QuizApp(ctk.CTk):
 
 if __name__ == "__main__":
     ctk.set_appearance_mode("dark")  # Set the appearance mode to dark
-    app = QuizApp(None, username="Guest")  # Create an instance of the QuizApp class with a username
-    app.root.mainloop()  # Start the Tkinter event loop for the root window of the QuizApp instance
+    imported_username = sys.argv[1] if len(sys.argv) > 1 else "Guest"  # Get the username from the command-line arguments, or use "Guest" as default value if no username is passed
+    imported_level = sys.argv[2] if len(sys.argv) > 2 else "lvl1" # Get the level from the command-line arguments, or use "lvl1" as default value if no level is passed
+    app = QuizApp(username = imported_username, level = imported_level)  # Create an instance of the QuizApp class with a username
+    app.mainloop()  # Start the Tkinter event loop for the root window of the QuizApp instance

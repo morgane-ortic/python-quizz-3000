@@ -3,20 +3,17 @@ import customtkinter            # import customtkinter for FANCY looking GUI
 from PIL import ImageTk, Image  # import ImageTk and Image from PIL to display images
 from tkinter import messagebox  # import messagebox from tkinter to show messages
 import bcrypt                   # Import bcrypt for password hashing
-
-# Roman's code --------------------------------------------------------------
+import subprocess               # Import subprocess to run the level menu
 
 # 1. Create a database to store user information
 
 import sqlite3            # Import sqlite3 to work with SQLite databases    
 from tkinter import END   # Import END from tkinter to clear the Entry widget
-# End of Roman's code ----------------------------------------------------------
 
-def load_challenge():                   # Load the challenges from quizz file
-    import sunny_customtk               # Import the challenges from our quizz file
-    app = sunny_customtk.QuizApp(root)  # Create an instance of QuizApp with our challenges
+def load_challenge(username):                   # Load the challenges from quizz file
+    subprocess.Popen(["python3", "level_menu.py" , username])
     Tk.destroy(root)                    # Destroy the root window
-# Roman's code --------------------------------------------------------------
+
 
 def init_db():  # Create a database to store user information
     conn = sqlite3.connect('user_info.db')    # Connect to the SQLite database. If it doesn't exist, it will be created.
@@ -34,8 +31,6 @@ def init_db():  # Create a database to store user information
 # call the function to create the database
 
 init_db()
-
-# End of Roman's code ----------------------------------------------------------
 
 # Define appearance of our tkinter window
 customtkinter.set_appearance_mode("dark")           
@@ -144,6 +139,8 @@ def show_login_form():        # Graphic part of the logging in
                                           text_color="black", hover_color="#f0f0f0", cursor="hand2",
                                           command=show_main_buttons)
 
+    back_button.pack(pady=10)
+
 def show_register_form():   # Graphic part of the registration
     global right_frame
     # Clear the right_frame
@@ -191,8 +188,6 @@ def show_register_form():   # Graphic part of the registration
                                           command=show_main_buttons)
     back_button.pack(pady=10)
 
-
-# Roman's code --------------------------------------------------------------
 
 # 2. Create a function to create a user account
 
@@ -242,12 +237,10 @@ def create_user(user_entry1, user_entry2, user_entry3): # Logical part of regist
     conn.close()    # close the connection
     del password, confirmation, hashed_password     # Delete the password, confirmation and hashed password from memory for safety
 
-# End of Roman's code ----------------------------------------------------------
-
-
 # Morgane's code --------------------------------------------------------------
 
 def login_user(username_entry, password_entry): # logical part of logging in
+    global username
     username = username_entry.get()     # Get the username from the entry widget (entered by user)
     password = password_entry.get()     # Get the password from the entry widget (entered by user)
 
@@ -267,7 +260,7 @@ def login_user(username_entry, password_entry): # logical part of logging in
 
     if bcrypt.checkpw(password.encode('utf-8'), stored_password):       # Check if the password is correct
         messagebox.showinfo("Success", "Logged in successfully! Welcome, " + username + "!")
-        load_challenge()  # Call function that loads the challenges
+        load_challenge(username)  # Call function that loads the challenges
     else:
         messagebox.showinfo("Error", "Incorrect password!") # Show an error message if the password is incorrect
 

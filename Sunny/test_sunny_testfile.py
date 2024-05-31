@@ -4,8 +4,6 @@ import traceback
 from contextlib import redirect_stdout
 import sqlite3
 
-#LINE 146 NEEDS A CONNECTION TO THE MAIN MENU
-
 # Run Python code and capture output
 def run_python_code(code):
     buffer = io.StringIO()
@@ -61,7 +59,7 @@ class QuizApp(ctk.CTk):
         self.main_menu_button.grid(row=0, column=2, padx=5)
 
         # Quiz questions
-        self.quiz_questions = [
+        '''self.quiz_questions = [
             {
                 "question": "# Fix the code to print 'Hello, World!'\nprint('Hello World'",
                 "code": "print('Hello World')",
@@ -88,7 +86,7 @@ class QuizApp(ctk.CTk):
                 "output": "28.274333882308138\n"
             },
             {
-                "question": "# Reverse a list\nlist = [1, 2, 3, 4, 5]\nprint([::5])",
+                "question": "# Reverse a list\nlist = [1, 2, 3, 4, 5]\nprint([::-1])",
                 "code": "list = [1, 2, 3, 4, 5]\nprint(list[::-1])",
                 "output": "[5, 4, 3, 2, 1]\n"
             },
@@ -107,7 +105,7 @@ class QuizApp(ctk.CTk):
                 "code": "string = 'hello'\nvowels = 'aeiou'\ncount = 0\nfor char in string:\n    if char.lower() in vowels:\n        count += 1\nprint(count)",
                 "output": "2\n"
             }
-        ]
+        ]'''
 
         # Initial question
         self.current_question = 0

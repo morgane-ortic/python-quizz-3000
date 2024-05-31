@@ -301,6 +301,7 @@ while run:
                 subprocess.Popen(["python3", "quizz_app.py" , username, board.level])    # Open the quiz script with the selected level in a new window
                 time.sleep(0.3)
                 pygame.quit()       # Close current window
+                run = False         # Stop the game loop
 
             space_pressed = True    # Set the flag to True when space is pressed
             time.sleep(0.2)         # Add a small delay to prevent multiple script executions on a single space key press

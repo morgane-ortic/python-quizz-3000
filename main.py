@@ -10,8 +10,8 @@ import sqlite3            # Import sqlite3 to work with SQLite databases
 from tkinter import END   # Import END from tkinter to clear the Entry widget
 
 def load_challenge(username):                   # Load the challenges from quizz file
-    import sunny_customtk_2               # Import the challenges from our quizz file
-    app = sunny_customtk_2.QuizApp(root, username)  # Create an instance of QuizApp with our challenges
+    import quizz_app               # Import the challenges from our quizz file
+    app = quizz_app.QuizApp(root, username)  # Create an instance of QuizApp with our challenges
     Tk.destroy(root)                    # Destroy the root window
 
 

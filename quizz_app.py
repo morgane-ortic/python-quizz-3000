@@ -110,6 +110,23 @@ class QuizApp(ctk.CTk):
         self.current_question = 0
         self.set_question(self.current_question)
 
+        # Initialize the highscore database for the given level
+        self.init_highscore_db()
+
+    def init_highscore_db(self):
+        self.highscore_db_name = f'highscore_{self.level}.db'
+        conn = sqlite3.connect(self.highscore_db_name)
+        c = conn.cursor()
+        c.execute('''
+            CREATE TABLE IF NOT EXISTS highscore (
+                username TEXT NOT NULL,
+                highscore INTEGER NOT NULL
+            )
+        ''')
+        conn.commit()
+        conn.close()
+
+
     def set_question(self, question_index):
         question = self.quiz_questions[question_index]
         self.code_editor.delete("0.0", "end")
@@ -160,6 +177,7 @@ class QuizApp(ctk.CTk):
             self.set_question(self.current_question)
 
     def quit_question(self):
+        self.transfer_and_reset_score()
         load_menu(self.username)
         self.destroy()
         
@@ -189,6 +207,28 @@ class QuizApp(ctk.CTk):
         # Update the label to reflect the new score
         self.user_label.configure(text=f"Logged in as: {self.username} | Score: {self.get_latest_score()}")
 
+    def transfer_and_reset_score(self):
+        conn_user_info = sqlite3.connect('user_info.db')
+        conn_highscore = sqlite3.connect(self.highscore_db_name)
+
+        c_user_info = conn_user_info.cursor()
+        c_highscore = conn_highscore.cursor()
+
+        # Get the current score
+        c_user_info.execute('SELECT score FROM users WHERE username = ?', (self.username,))
+        score = c_user_info.fetchone()[0]
+
+        # Insert the current score into the level-specific highscore.db
+        c_highscore.execute('INSERT INTO highscore (username, highscore) VALUES (?, ?)', (self.username, score))
+
+        # Reset the score in user_info.db
+        c_user_info.execute('UPDATE users SET score = 0 WHERE username = ?', (self.username,))
+
+        conn_user_info.commit()
+        conn_highscore.commit()
+
+        conn_user_info.close()
+        conn_highscore.close()
 
 if __name__ == "__main__":
     ctk.set_appearance_mode("dark")  # Set the appearance mode to dark

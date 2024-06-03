@@ -5,6 +5,10 @@ from contextlib import redirect_stdout
 import sqlite3
 import sys
 import json
+import subprocess
+
+def load_menu(username):                   # Load the challenges from quizz file
+    subprocess.Popen(["python3", "level_menu.py" , username])
 
 def run_python_code(code):
     """
@@ -62,9 +66,15 @@ class QuizApp(ctk.CTk):
         self.next_button = ctk.CTkButton(button_frame, text="Next", font=("Arial", 18), command=self.next_question, width=150, height=40, corner_radius=10, state="disabled")
         self.next_button.grid(row=0, column=1, padx=5)
 
-         # Create a "Main Menu" button
+        ''' # Create a "Main Menu" button
         main_menu_button = ctk.CTkButton(button_frame, text="Main Menu", font=("Arial", 18), width=150, height=40, corner_radius=10, fg_color="magenta")
-        main_menu_button.grid(row=0, column=2, padx=5)
+        main_menu_button.grid(row=0, column=2, padx=5)'''
+
+        # Create a "quit" button
+        quit_button = ctk.CTkButton(
+            button_frame, text="Quit", font=("Arial", 18), command=self.quit_question, width=150, height=40, corner_radius=10, fg_color="magenta"
+        )
+        quit_button.grid(row=0, column=2, padx=5)
 
         # Load the quiz questions from a JSON file based on the selected level
         challenge_filename = f"{level}.json"
@@ -122,6 +132,11 @@ class QuizApp(ctk.CTk):
         if self.current_question < len(self.quiz_questions) - 1:
             self.current_question += 1
             self.set_question(self.current_question)
+
+    def quit_question(self):
+        self.transfer_and_reset_score()
+        load_menu(self.username)
+        self.destroy()
 
     def get_latest_score(self):
         """

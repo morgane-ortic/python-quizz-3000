@@ -1,4 +1,4 @@
-*.user_info.db
+*.db
 
 
 ## Ignore Visual Studio temporary files, build results, and

@@ -7,6 +7,12 @@ import sys          # Import sys to access passed arguments
 import json         # Import json to access our challenge data from desired json file
 
 
+import subprocess               # Import subprocess to run the level menu
+from tkinter import *           # import tkinter for GUI
+
+def load_menu(username):                   # Load the challenges from quizz file
+    subprocess.Popen(["python3", "level_menu.py" , username])
+
 def run_python_code(code):
     # Create a string buffer to capture the output
     buffer = io.StringIO()
@@ -88,6 +94,12 @@ class QuizApp(ctk.CTk):
         )
         next_button.grid(row=0, column=2, padx=5)
 
+        # Create a "quit" button
+        quit_button = ctk.CTkButton(
+            button_frame, text="Quit", font=("Arial", 18), command=self.quit_question, width=150, height=40, corner_radius=10
+        )
+        quit_button.grid(row=0, column=3, padx=5)
+
         # Construct the filename based on the selected level
         challenge_filename = f"{level}.json"
         # Open the JSON file and load the data
@@ -147,6 +159,10 @@ class QuizApp(ctk.CTk):
             self.current_question += 1
             self.set_question(self.current_question)
 
+    def quit_question(self):
+        load_menu(self.username)
+        self.destroy()
+        
     def get_latest_score(self):
         try:
             conn = sqlite3.connect('user_info.db')

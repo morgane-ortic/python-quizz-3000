@@ -1,16 +1,16 @@
 [
     {
-        "question": "# Fix the code to print 'Hello, World!'\nprint('Hello World')",
+        "question": "# Fix the code to print 'Hello, World!'",
         "code": "print('Hello World')",
         "output": "Hello, World!\n"
     },
     {
-        "question": "# Fix the code to print the sum of two numbers\na = 5\nb = 10\nprint(a, b)",
+        "question": "# Fix the code to print the sum of two numbers",
         "code": "a = 5\nb = 10\nprint(a + b)",
         "output": "15\n"
     },
     {
-        "question": "# Print only the even numbers from a list:\nnumbers =[1,2,3,4,5]\nfor num in numbers:\nif num % 2 == 0:\\print(num)",
+        "question": "# Print only the even numbers from a list:",
         "code": "numbers = [1,2, 3, 4, 5]\nfor num in numbers:\n    if num % 2 == 0:\n        print(num)",
         "output": "2\n4\n"
     }

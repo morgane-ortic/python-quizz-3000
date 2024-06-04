@@ -1,0 +1,17 @@
+[
+    {
+        "question": "# Using function recursion, fix the code to print a single integer input argument that prints a countdown starting from the given number , as follows:",
+        "code": "def countdown(number):\n    print(number)\n    if number > 0:\n        countdown(number)\n\ncountdown(5)",
+        "output": "5\n4\n3\n2\n1\n0"
+    },
+    {
+        "question": "# Using function recursion, fix the code to print the harmonic sum of 7. (the sum of reciprocals of the positive integers) The result should be: 2.5928571428571425",
+        "code": "def harmonic_sum(number):\n    if number < 1:\n        return 0\n    else:\n        return 1 / number\n\nprint(harmonic_sum(7))"        ,
+        "output": "2.5928571428571425"
+    },
+    {
+        "question": "# Using function recursion, fix the code to change every letter 'o' into the capitalised letter 'O' in the printed string.",
+        "code": "def print_with_o_upper(txt, index=0):\n    if index == len(txt):\n        return\n    else:\n        if txt[index] == 'o':\n            print(txt[index].upper(), end='')\n        else:\n            print(txt[index], end='')\n\ntxt = \"Look, good code is almost like a good song\"\nprint_with_o_upper(txt)",
+        "output": "LOOk, gOOd cOde is almOst like a gOOd sOng"
+    }
+]

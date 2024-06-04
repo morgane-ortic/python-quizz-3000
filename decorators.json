@@ -1,0 +1,18 @@
+[
+    {
+        "question": "# Fix the code to print \"Hello, Markus\" using a decorator",
+        "code": "def add_name_decorator(func):\n    def wrapper(name):\n        return func() + \", \" + name\n    return wrapper\n\nadd_name_decorator\ndef greet():\n    return \"Hello\"\n\nprint(greet(\"Markus\"))",
+        "output": "Hello, Markus"
+    },
+    {
+        "question": "# Fix the code to print \"HELLO!\" in uppercase using a decorator, without modifying the strings.",
+        "code": "def uppercase_decorator(say_hello):\n    def wrapper():\n        result = func()\n        return result.upper()\n    return wrapper\n\n@uppercase_decorator\ndef say_hello():\n    return \"Hello!\"\n\nprint(say_hello())",
+        "output": "HELLO!"
+    },
+    {
+        "question": "# Fix the code to print \"HELLO!!!\" in uppercase using a decorator, without modifying the strings.",
+        "code": "def uppercase_decorator(func):\n    def wrapper():\n        result = func()\n        return result.upper()\n    return say_hello\n\ndef exclamation_decorator(func):\n        result = func()\n        return result + \"!!!\"\n    return wrapper\n\n@uppercase_decorator\n@exclamation_decorator\ndef say_hello():\n    return \"Hello\"\n\nprint(say_hello())",
+        "output": "HELLO!!!"
+    }
+    
+]

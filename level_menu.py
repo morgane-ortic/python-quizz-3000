@@ -174,8 +174,8 @@ notice_boards = [
     NoticeBoard(385, 382, "lvl1", notice_board_sprite, single_notice_sprite1),
     NoticeBoard(900, 382, "lvl2", notice_board_sprite, single_notice_sprite2),
     NoticeBoard(1375, 311, "lvl3", notice_board_sprite, single_notice_sprite3),
-    NoticeBoard(480, 864, "lvl4", notice_board_sprite, single_notice_sprite4),
-    NoticeBoard(925, 760, "lvl5", notice_board_sprite, single_notice_sprite5)
+    NoticeBoard(480, 864, "decorators", notice_board_sprite, single_notice_sprite4),
+    NoticeBoard(925, 760, "recursive-functions", notice_board_sprite, single_notice_sprite5)
 ]
 
 notice_board_positions = [(board.x, board.y) for board in notice_boards]    # Get the positions of each notice board

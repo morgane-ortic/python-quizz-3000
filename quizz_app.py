@@ -130,8 +130,9 @@ class QuizApp(ctk.CTk):
     def set_question(self, question_index):
         question = self.quiz_questions[question_index]
         self.code_editor.delete("0.0", "end")
-        self.code_editor.insert("0.0", question["question"])
-        self.correct_output = question["output"]
+        self.code_editor.insert("0.0", question["question"])        # add the question field to left window
+        self.code_editor.insert("end", "\n\n" + question["code"])   # add the code field to left window
+        self.correct_output = question["output"]                    # import the expected output
 
     def run_code(self):
         # Get the user's code from the Text widget

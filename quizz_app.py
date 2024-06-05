@@ -69,34 +69,23 @@ class QuizApp(ctk.CTk):
         button_frame = ctk.CTkFrame(self)
         button_frame.grid(row=2, column=0, columnspan=2, padx=13, pady=0, sticky="ew")
 
-        # Create a "Prev" button
-        prev_button = ctk.CTkButton(
-            button_frame, text="Prev", font=("Arial", 18), command=self.prev_question, width=150, height=40, corner_radius=10
-        )
-        prev_button.grid(row=0, column=0, padx=0)
+        # # Create a "Prev" button
+        # prev_button = ctk.CTkButton(
+        #     button_frame, text="Prev", font=("Arial", 18), command=self.prev_question, width=150, height=40, corner_radius=10
+        # )
+        # prev_button.grid(row=0, column=0, padx=0)
 
         # Create a "Run" button
-        run_button = ctk.CTkButton(
-            button_frame,
-            text="Run",
-            font=("Arial", 18),
-            command=self.run_code,
-            width=150,
-            height=40,
-            corner_radius=10,
-            fg_color="green"
-        )
-        run_button.grid(row=0, column=1, padx=5)
+        run_button = ctk.CTkButton(button_frame, text="Run", font=("Arial", 18), command=self.run_code, width=150, height=40, corner_radius=10, fg_color="green")
+        run_button.grid(row=0, column=0, padx=5)
 
-        # Create a "Next" button
-        next_button = ctk.CTkButton(
-            button_frame, text="Next", font=("Arial", 18), command=self.next_question, width=150, height=40, corner_radius=10
-        )
-        next_button.grid(row=0, column=2, padx=5)
+        # Create a "Next" button (initially disabled)
+        self.next_button = ctk.CTkButton(button_frame, text="Next", font=("Arial", 18), command=self.next_question, width=150, height=40, corner_radius=10, state="disabled")
+        self.next_button.grid(row=0, column=1, padx=5)
 
         # Create a "quit" button
         quit_button = ctk.CTkButton(
-            button_frame, text="Quit", font=("Arial", 18), command=self.quit_question, width=150, height=40, corner_radius=10
+            button_frame, text="Quit", font=("Arial", 18), command=self.quit_question, width=150, height=40, corner_radius=10, fg_color="magenta"
         )
         quit_button.grid(row=0, column=3, padx=5)
 

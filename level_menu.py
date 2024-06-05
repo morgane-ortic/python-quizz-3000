@@ -3,6 +3,7 @@ import pygame       # Import pygame to program our game menu
 import time         # Import time to control the speed of our character animation
 import subprocess   # Import subprocess to run a new script from this menu
 import sys          # Import sys to access passed arguments
+import sqlite3
 
 start_frame = time.time()   # get the current time when we start the program in order to calculate frame index for sprite animations
 anim_noi = 3                # number of images for each of our animations
@@ -210,36 +211,71 @@ def char_facing_board():
 
 def text_box(message, x, y):
     '''Create a text box giving instructions to user, here to press SPACE to start the challenge'''
-    font = pygame.font.Font("level-menu-img/Berenika-Bold.ttf", 20)           # Set the font and size
-    text = font.render(message, 1, (255,255,255))     # Create the text
-    text_rect = text.get_rect(center=(x, y))    # Set the position of the text
+    font = pygame.font.Font("level-menu-img/Berenika-Bold.ttf", 20)  # Set the font and size
+    lines = message.split('\n')  # Split message into lines
+    text_surfaces = [font.render(line, True, (255, 255, 255)) for line in lines]  # Render each line
+    max_width = max(text_surface.get_width() for text_surface in text_surfaces)  # Find the max width
+    total_height = sum(text_surface.get_height() for text_surface in text_surfaces)  # Find the total height
 
-    # Ensure the text box is within the window boundaries + add a margin between text box and window edge
+    # Set the position of the text box with a margin
     txtbx_margin = 12
-    text_rect.x = max(min(text_rect.x, win.get_width() - text_rect.width - txtbx_margin), txtbx_margin)
-    text_rect.y = max(min(text_rect.y, win.get_height() - text_rect.height - txtbx_margin), txtbx_margin)
+    x = max(min(x, win.get_width() - max_width - txtbx_margin), txtbx_margin)
+    y = max(min(y, win.get_height() - total_height - txtbx_margin), txtbx_margin)
 
-    pygame.draw.rect(win, (40, 40, 40), text_rect.inflate(12, 12))   # Draw a rectangle around the text
-    win.blit(text, text_rect)                   # Display the text on the screen
+    # Draw the rectangle background for the text box
+    pygame.draw.rect(win, (40, 40, 40), (x - txtbx_margin, y - txtbx_margin, max_width + txtbx_margin * 2, total_height + txtbx_margin * 2))
 
+    # Blit each line of text onto the screen
+    offset_y = y
+    for text_surface in text_surfaces:
+        win.blit(text_surface, (x, offset_y))
+        offset_y += text_surface.get_height()
 
+def get_highscores(db_name):
+    '''Fetch high scores from the specified database and return as a formatted string'''
+    try:
+        conn = sqlite3.connect(db_name)
+        cursor = conn.cursor()
+        cursor.execute("SELECT username, highscore FROM highscore ORDER BY highscore DESC LIMIT 10")
+        rows = cursor.fetchall()
+        conn.close()
+        highscore_text = "\nHighscores:\n"
+        for row in rows:
+            highscore_text += f"{row[0]}: {row[1]}\n"
+        return highscore_text
+    except Exception as e:
+        return f"\nError fetching highscores: {e}"
 
 def redrawGameWindow():
     '''Draw the game window with all the elements on it'''
-    win.blit(bg, (0,0))                         # Draw the background    
-    for board in notice_boards:                 # Draw each notice board
+    win.blit(bg, (0, 0))  # Draw the background    
+    for board in notice_boards:  # Draw each notice board
         board.draw(win)
+    
     # Display a message if the character is facing a notice board
     board = char_facing_board()
     if board is not None:
-        text_box('Press SPACE to start this challenge', board.x + 56, board.y - 25)
+        if board.level == "lvl1":
+            highscores = get_highscores("highscore_lvl1.db")
+            text_box(f'Press SPACE to start Level 1!\nComplete the first challenge.{highscores}', board.x + 56, board.y - 25)
+        elif board.level == "lvl2":
+            highscores = get_highscores("highscore_lvl2.db")
+            text_box(f'Press SPACE to start Level 2!\nGet ready for the second challenge.{highscores}', board.x + 56, board.y - 25)
+        elif board.level == "lvl3":
+            highscores = get_highscores("highscore_lvl3.db")
+            text_box(f'Press SPACE to start Level 3!\nThe third challenge awaits you.{highscores}', board.x + 56, board.y - 25)
+        elif board.level == "decorators":
+            highscores = get_highscores("highscore_decorators.db")
+            text_box(f'Press SPACE to learn about Decorators!\nUnderstand the concept of decorators in Python.{highscores}', board.x + 56, board.y - 25)
+        elif board.level == "recursive-functions":
+            highscores = get_highscores("highscore_recursive-functions.db")
+            text_box(f'Press SPACE to learn about Recursive Functions!\nDive into recursive functions.{highscores}', board.x + 56, board.y - 25)
+        else:
+            text_box('Press SPACE to start this challenge', board.x + 56, board.y - 25)
 
-    character.draw(win)                         # Draw the character
+    character.draw(win)  # Draw the character
+    pygame.display.update()  # Update the display
 
-    # Draw the player's rectangle for debugging
-    # pygame.draw.rect(win, (255, 0, 0), (character.x, character.y, character.width, character.height), 1)
-
-    pygame.display.update()                    # Update the display
 
 
 #mainloop

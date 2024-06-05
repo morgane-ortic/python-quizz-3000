@@ -80,7 +80,7 @@ class player(object):
         self.y = y
         self.width = width
         self.height = height
-        self.vel = 5
+        self.vel = 8
         self.isJump = False
         self.left = False
         self.right = False
@@ -90,8 +90,6 @@ class player(object):
         self.jumpCount = 5
         self.standing = True
         self.direction = None # New attribute for keeping track of the last direction
-        self.hitbox = (self.x + 17, self.y + 11, 29, 52)
-        self.velY = 5  # New variable for vertical velocity
         self.frameCounter = 0  # New variable for frame counter
         self.defaultSprite = char # Default sprite for player
         self.rect = pygame.Rect(x, y, width, height)  # create and assign a rect object to player
@@ -193,18 +191,24 @@ def char_facing_board():
         board_top = board.y
         board_bottom = board.y + 71
 
-        # Calculate the coordinates of the corners of the character
-        character_left = character.x
-        character_right = character.x + character.width
-        character_center = character.x + character.width/2
-        character_top = character.y + 38
-        character_bottom = character.y + character.height
-
         # Check if the character is overlapping with the board
-        if (character_center >= board_left and character_center <= board_right and
-            character_bottom >= board_top and character_top <= board_bottom):
+        if (char_center >= board_left and char_center <= board_right and
+            char_bottom_side >= board_top and char_top_side <= board_bottom):
             return board
 
+    return None
+
+
+def char_facing_exit():
+    '''Check if the character is facing one of the exit roads'''
+    # Calculate the coordinates of the exit zones
+    exit_1 = (126, 0, 330, 0)
+    exit_2 = (408, 990, 749, 1000)
+    # Check if the character is within either exit_1 or exit_2
+    if (char_center >= exit_1[0] and char_center <= exit_1[2] and (char_top_side - 38) <= exit_1[3]):
+        return "top_exit"
+    if (char_center >= exit_2[0] and char_center <= exit_2[2] and char_bottom_side >= exit_2[1]):
+        return "bottom_exit"
     return None
 
 
@@ -233,6 +237,11 @@ def redrawGameWindow():
     board = char_facing_board()
     if board is not None:
         text_box('Press SPACE to start this challenge', board.x + 56, board.y - 25)
+    facing_exit = char_facing_exit()
+    if facing_exit == "top_exit":
+        text_box('Press SPACE to exit the program', 240, 100)
+    if facing_exit == "bottom_exit":
+        text_box('Press SPACE to exit the program', 800, 892)
 
     character.draw(win)                         # Draw the character
 
@@ -251,7 +260,14 @@ while run:
     
     for event in pygame.event.get():    # Check for events
         if event.type == pygame.QUIT:   # Check if the user wants to quit the game
-            run = False
+            run = False    
+
+    # Calculate the coordinates of the corners of the character
+    char_left_side = character.x
+    char_right_side = character.x + character.width
+    char_center = character.x + character.width/2
+    char_top_side = character.y + 38
+    char_bottom_side = character.y + character.height
 
     keys = pygame.key.get_pressed()     # Get the keys that are pressed
 
@@ -275,14 +291,14 @@ while run:
         character.right = False
 
     # Check if the up key is pressed and the player is not at the top edge of the screen
-    if keys[pygame.K_UP] and character.y > character.velY:
-        new_y -= character.velY
+    if keys[pygame.K_UP] and character.y > 0:
+        new_y -= character.vel
         character.up = True
         character.down = False
         character.standing = False
     # Check if the down key is pressed and the player is not at the bottom edge of the screen
-    elif keys[pygame.K_DOWN] and character.y + character.height + character.velY < 1000:
-        new_y += character.velY
+    elif keys[pygame.K_DOWN] and character.y + character.height + character.vel < 1000:
+        new_y += character.vel
         character.down = True
         character.up = False
         character.standing = False
@@ -306,6 +322,11 @@ while run:
                 # Run a new Python script
                 subprocess.Popen(["python3", "quizz_app.py" , username, board.level])    # Open the quiz script with the selected level in a new window
                 time.sleep(0.3)
+                pygame.quit()       # Close current window
+                run = False         # Stop the game loop
+
+            facing_exit = char_facing_exit
+            if facing_exit != None:
                 pygame.quit()       # Close current window
                 run = False         # Stop the game loop
 

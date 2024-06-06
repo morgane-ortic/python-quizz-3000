@@ -1,0 +1,17 @@
+[
+    {
+        "question": "Complete and repair the code so that in the following sentence 'I play with my dog.' every consonant is replaced with '%' and every vowel is replaced with '$'. Print the new Text in one line.",
+        "code": "txt = \"I play with my Dog.\"\nvowel  = \"aeiou\"\nconsonant= \"BCDFGHJKLMNPQRSTVWXYZ\"\nfor txt\n\tif txt =  vowel\n\t\ttxt = \"%\"\n\tif txt = consonant\n\t\ttxt = \"$\"\n\telse:\n\t\ttxt = txt\nprint(txt)",
+        "output": "$$%$ $%$$ $$ $%$."
+    },
+    {
+        "question": "Write a program that outputs the Fibonacci sequence up to the 10th number. Print the result and leave a space between each number. No space before the first number and after the last number.",
+        "code": "fibonacci = [1, 1]\nfor i in",
+        "output": "1 1 2 3 5 8 13 21 34 55"
+    },
+    {
+        "question": "Complete the program so that the first 10 Fibonacci numbers is multiplied by the first 10 prime number at the same position. Output the respective results in a line separated by a space.",
+        "code": "fib_sequence = [0, 1]\nwhile len(fib_sequence) < 10:\n...\nprimes = []\ncandidate = 2\nwhile len(primes) < 10:\n---\nwhile\n...\nprint(result)",
+        "output": "0 3 5 14 33 65 136 247 483 986"
+    }
+]

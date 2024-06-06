@@ -1,0 +1,17 @@
+[
+    {
+        "question": "Fix that Code to counts from 0 to 10 in steps of 1. Then print it in one line.\nAfter that, count from 10 to 0 in steps of 1. and print in one line.",
+        "code": "while:\n  x = 1\nprint(x)\nwhile:\n  x = -1\nprint(x)",
+        "output": "012345678910\n109876543210"
+    },
+    {
+        "question": "Complete a program so that it counts from 0 to 10 but prints the squares of each step in one line, separated by a space. The step length is 1.",
+        "code": "x = 0\nwhile x:\n  x = x+1\n  xx\nprint(x)",
+        "output": "0 1 4 9 16 25 36 49 64 81 100"
+    },
+    {
+        "question": "Fix the code so that the following string \"I go to school an lern python.\" is used and in the output, all spaces are replaced with \"_\".",
+        "code": "txt = \"I go to school an lern python.\"\nwhile:\n  newTXT = newtxt + txt[x]\nprint(newTXT)",
+        "output": "I_go_to_school_and_lern_python."
+    }
+]

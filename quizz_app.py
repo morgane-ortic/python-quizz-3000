@@ -3,12 +3,9 @@ import io
 import traceback
 from contextlib import redirect_stdout
 import sqlite3
-import sys          # Import sys to access passed arguments
-import json         # Import json to access our challenge data from desired json file
-
-
-import subprocess               # Import subprocess to run the level menu
-from tkinter import *           # import tkinter for GUI
+import sys
+import json
+import subprocess
 
 def load_menu(username):                   # Load the challenges from quizz file
     subprocess.Popen(["python3", "level_menu.py" , username])
@@ -24,9 +21,9 @@ def run_python_code(code):
     except Exception as e:
         # Capture the full traceback and add it to the buffer
         buffer.write(traceback.format_exc())
-        # add status variable 
+        # add status variable
         # add a status variable indicating if output points an error
-        valid_code = False   
+        valid_code = False  
     # Get the output from the buffer
     output = buffer.getvalue()
     buffer.close()
@@ -68,12 +65,6 @@ class QuizApp(ctk.CTk):
         # Create a button frame
         button_frame = ctk.CTkFrame(self)
         button_frame.grid(row=2, column=0, columnspan=2, padx=13, pady=0, sticky="ew")
-
-        # # Create a "Prev" button
-        # prev_button = ctk.CTkButton(
-        #     button_frame, text="Prev", font=("Arial", 18), command=self.prev_question, width=150, height=40, corner_radius=10
-        # )
-        # prev_button.grid(row=0, column=0, padx=0)
 
         # Create a "Run" button
         run_button = ctk.CTkButton(button_frame, text="Run", font=("Arial", 18), command=self.run_code, width=150, height=40, corner_radius=10, fg_color="green")
@@ -122,6 +113,7 @@ class QuizApp(ctk.CTk):
         self.code_editor.insert("0.0", question["question"])        # add the question field to left window
         self.code_editor.insert("end", "\n\n" + question["code"])   # add the code field to left window
         self.correct_output = question["output"]                    # import the expected output
+        self.next_button.configure(state="disabled")  # Disable the "Next" button
 
     def run_code(self):
         # Get the user's code from the Text widget
@@ -148,10 +140,7 @@ class QuizApp(ctk.CTk):
         if output.strip() == self.correct_output.strip():
             self.output_window.insert("end", "\nCorrect answer!", "tag_green")
             self.update_score(50)  # Increase score by 50 for a correct answer
-            # Move to the next question if available
-            if self.current_question < len(self.quiz_questions) - 1:
-                self.current_question += 1
-                self.set_question(self.current_question)
+            self.next_button.configure(state="normal")  # Enable the "Next" button
         else:
             self.output_window.insert("end", "\nIncorrect answer. Please try again.", "tag_red")
             self.update_score(-5)  # Decrease score by 5 for an incorrect answer
@@ -165,12 +154,14 @@ class QuizApp(ctk.CTk):
         if self.current_question < len(self.quiz_questions) - 1:
             self.current_question += 1
             self.set_question(self.current_question)
+            self.output_window.delete("0.0", "end")  # Clear the right screen
+            self.next_button.configure(state="disabled")  # Disable the "Next" button
 
     def quit_question(self):
         self.transfer_and_reset_score()
         load_menu(self.username)
         self.destroy()
-        
+       
     def get_latest_score(self):
         try:
             conn = sqlite3.connect('user_info.db')

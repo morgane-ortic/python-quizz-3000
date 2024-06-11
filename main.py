@@ -44,7 +44,7 @@ def main_screen():              # Create the main screen
     root.geometry("1300x800")   # Define the size of the window
 
     # Load background image
-    bg_image = ImageTk.PhotoImage(Image.open("pics/background2.jpg"))
+    bg_image = ImageTk.PhotoImage(Image.open("pics/OIG4.jpg"))
 
     # Left Frame for the background image and text
     left_frame = customtkinter.CTkFrame(master=root, width=900, height=600, corner_radius=0)
@@ -111,7 +111,7 @@ def show_login_form():        # Graphic part of the logging in
     my_entry.pack(pady=10)
 
     # Add another entry widget
-    my_entry2 = customtkinter.CTkEntry(master=frame, placeholder_text="Password",
+    my_entry2 = customtkinter.CTkEntry(master=frame, placeholder_text="Password", show="*",
                                        height=40, width=300,
                                        corner_radius=20,
                                        border_width=0,

@@ -361,7 +361,7 @@ while run:
                 pygame.quit()       # Close current window
                 run = False         # Stop the game loop
 
-            facing_exit = char_facing_exit
+            facing_exit = char_facing_exit()
             if facing_exit != None:
                 pygame.quit()       # Close current window
                 run = False         # Stop the game loop

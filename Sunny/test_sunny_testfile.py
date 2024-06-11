@@ -6,6 +6,9 @@ import sqlite3
 import sys
 import json
 import subprocess
+from rich.console import Console
+
+
 
 def load_menu(username):                   # Load the challenges from quizz file
     subprocess.Popen(["python3", "level_menu.py" , username])
@@ -29,7 +32,7 @@ def run_python_code(code):
     buffer.close()
     return output, valid_code
 
-
+console = Console()
 class QuizApp(ctk.CTk):
     def __init__(self, username, level):  # Initialize the QuizApp class with username and root arguments
 
@@ -67,19 +70,20 @@ class QuizApp(ctk.CTk):
         button_frame.grid(row=2, column=0, columnspan=2, padx=13, pady=0, sticky="ew")
 
         # Create a "Run" button
-        run_button = ctk.CTkButton(button_frame, text="Run", font=("Arial", 18), command=self.run_code, width=150, height=40, corner_radius=10, fg_color="green")
+        run_button = ctk.CTkButton(button_frame, text="Run", font=("Arial", 18), command=self.run_code, width=150, height=40, corner_radius=10, fg_color="green", hover_color="green")
         run_button.grid(row=0, column=0, padx=5)
 
         # Create a "Next" button (initially disabled)
-        self.next_button = ctk.CTkButton(button_frame, text="Next", font=("Arial", 18), command=self.next_question, width=150, height=40, corner_radius=10, state="disabled")
+        self.next_button = ctk.CTkButton(button_frame, text="Next", font=("Arial", 18), command=self.next_question, width=150, height=40, corner_radius=10, state="disabled", fg_color="grey")
         self.next_button.grid(row=0, column=1, padx=5)
 
         # Create a "quit" button
         quit_button = ctk.CTkButton(
-            button_frame, text="Quit", font=("Arial", 18), command=self.quit_question, width=150, height=40, corner_radius=10, fg_color="magenta"
+            button_frame, text="Quit", font=("Arial", 18), command=self.quit_question, width=150, height=40, corner_radius=10, fg_color="red", hover_color="red"
         )
         quit_button.grid(row=0, column=3, padx=5)
 
+    
         # Construct the filename based on the selected level
         challenge_filename = f"{level}.json"
         # Open the JSON file and load the data
@@ -113,7 +117,7 @@ class QuizApp(ctk.CTk):
         self.code_editor.insert("0.0", question["question"])        # add the question field to left window
         self.code_editor.insert("end", "\n\n" + question["code"])   # add the code field to left window
         self.correct_output = question["output"]                    # import the expected output
-        self.next_button.configure(state="disabled")  # Disable the "Next" button
+        self.next_button.configure(state="disabled", fg_color="grey")  # Disable the "Next" button
 
     def run_code(self):
         # Get the user's code from the Text widget
@@ -140,7 +144,7 @@ class QuizApp(ctk.CTk):
         if output.strip() == self.correct_output.strip():
             self.output_window.insert("end", "\nCorrect answer!", "tag_green")
             self.update_score(50)  # Increase score by 50 for a correct answer
-            self.next_button.configure(state="normal")  # Enable the "Next" button
+            self.next_button.configure(state="normal", fg_color="blue", hover_color="blue")  # Enable the "Next" button
         else:
             self.output_window.insert("end", "\nIncorrect answer. Please try again.", "tag_red")
             self.update_score(-5)  # Decrease score by 5 for an incorrect answer

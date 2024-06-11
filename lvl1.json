@@ -1,11 +1,11 @@
 [
     {
-      "question": "# Greet the user by name:\nname = 'Alice'\n# Fix the code here:\nprint('Hello, ' + name)",
+      "question": "# Greet the user by name:\nname = 'Alice'\n\n# Fix the code here:\nprint('Hello, ' + )\n",
       "code": "",
       "output": "Hello, Alice\n"
     },
     {
-      "question": "# Calculate the area of a rectangle:\nwidth = 5\nheight = 3\n# Fix the code here:\nprint('Area:', width * height)",
+      "question": "# Calculate the area of a rectangle:\nwidth = 5\nheight = 3\n\n# Fix the code here:",
       "code": "width = 5\nheight = 3\nprint('Area:', width * height)",
       "output": "Area: 15\n"
     },

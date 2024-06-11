@@ -1,0 +1,17 @@
+[
+    {
+        "question": "Complete the code so that you achieve the following simple decryption. The decryption should change the characters of the plaintext by 2 positions and then by an additional position for each subsequent character. For example, the first character is shifted by 2, the second by 3, and so on. It is important that the order follows from a-z, then 0-9, and finally the space character. Punctuation marks should be removed and not considered in the encryption process (including their positions). The following plaintext should be used as a string: 'I go to School. I love School.' Output the result using print. Punctuation marks and ' remain the same.",
+        "code": "alphabet = 'abcdefghijklmnopqrstuvwxyz'\ndigits = '0123456789'\nall_chars = alphabet + digits + ' '\nplaintext = 'I go to School. I love School.'\nprint(decrypted_text)",
+        "output": "kcktf0wi2nt120pzr48f0wf17efd"
+    },
+    {
+        "question": "Complete the code. The program should have the following plaintext: 'I play football every Sunday. That's what I like to do.' The string for the key looks like this: 'wduaf'. The program should then encrypt the text using the Vigenère cipher scheme. Each letter of the plaintext is shifted by the corresponding letter in the key. If the key is shorter than the plaintext, it is repeated cyclically. Output the result as a print. Punctuation marks and ' remain the same.",
+        "code": "plaintext = \"I play football every Sunday. That's what I like to do.\"\nkey = \"wduaf\"\nencrypted_text = \"\"\nkey_index = 0\nfor char in plaintext:",
+        "output": "EsfadbritgwofeaausSzjguy.Yddn'sbddnIqenyttzr."
+    },
+    {
+        "question": "Write a program that encrypts bitwise using XOR. The plaintext is: 'I play football every Sunday. That's what I like to do.' The key looks like this: 'asdopjwpza'. Output the result as a print.",
+        "code": "plaintext = \"I play football every Sunday. That's what I like to do.\"\nkey = \"asdopjwpza\"\nencrypted_text = \"\"",
+        "output": "(SWJS7  TA5WS-OZS^"
+    }
+]

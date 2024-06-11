@@ -261,21 +261,21 @@ def redrawGameWindow():
     if board is not None:
         if board.level == "lvl1":
             highscores = get_highscores("highscore_lvl1.db")
-            text_box(f'Press SPACE to start Level 1!\nComplete the first challenge.{highscores}', board.x + 56, board.y - 25)
+            text_box(f'Press SPACE to start Level 1!\nComplete the first challenge.{highscores}', board.x + 125, board.y)
         elif board.level == "lvl2":
             highscores = get_highscores("highscore_lvl2.db")
-            text_box(f'Press SPACE to start Level 2!\nGet ready for the second challenge.{highscores}', board.x + 56, board.y - 25)
+            text_box(f'Press SPACE to start Level 2!\nGet ready for the second challenge.{highscores}', board.x + 125, board.y)
         elif board.level == "lvl3":
             highscores = get_highscores("highscore_lvl3.db")
-            text_box(f'Press SPACE to start Level 3!\nThe third challenge awaits you.{highscores}', board.x + 56, board.y - 25)
+            text_box(f'Press SPACE to start Level 3!\nThe third challenge awaits you.{highscores}', board.x - 340, board.y)
         elif board.level == "decorators":
             highscores = get_highscores("highscore_decorators.db")
-            text_box(f'Press SPACE to learn about Decorators!\nUnderstand the concept of decorators in Python.{highscores}', board.x + 56, board.y - 25)
+            text_box(f'Press SPACE to learn about Decorators!\nUnderstand the concept of decorators in Python.{highscores}', board.x + 125, board.y)
         elif board.level == "recursive-functions":
             highscores = get_highscores("highscore_recursive-functions.db")
-            text_box(f'Press SPACE to learn about Recursive Functions!\nDive into recursive functions.{highscores}', board.x + 56, board.y - 25)
+            text_box(f'Press SPACE to learn about Recursive Functions!\nDive into recursive functions.{highscores}', board.x - 540, board.y)
         else:
-            text_box('Press SPACE to start this challenge', board.x + 56, board.y - 25)
+            text_box('Press SPACE to start this challenge', board.x + 125, board.y)
     facing_exit = char_facing_exit()
     if facing_exit == "top_exit":
         text_box('Press SPACE to exit the program', 240, 100)

@@ -1,7 +1,7 @@
 [
     {
-      "question": "# Greet the user by name:\nname = 'Alice'\n\n# Fix the code here:\nprint('Hello, ' + )\n",
-      "code": "",
+      "question": "# Greet the user by name:\nname = 'Alice'\n\n# Fix the code here:",
+      "code": "print('Hello, ' + )\n",
       "output": "Hello, Alice\n"
     },
     {
@@ -10,7 +10,7 @@
       "output": "Area: 15\n"
     },
     {
-      "question": "# Check if a number is even:\nnumber = 8\n# Fix the code here:\nprint('Even' if number % 2 == 0 else 'Odd')",
+      "question": "# Check if a number is even:\nnumber = 8\n\n# Fix the code here:",
       "code": "number = 8\nprint('Even' if number % 2 == 0 else 'Odd')",
       "output": "Even\n"
     }

@@ -170,9 +170,9 @@ class NoticeBoard(object):
 
 # Add notice boards
 notice_boards = [
-    NoticeBoard(385, 382, "lvl1", notice_board_sprite, single_notice_sprite1),
-    NoticeBoard(900, 382, "lvl2", notice_board_sprite, single_notice_sprite2),
-    NoticeBoard(1375, 311, "lvl3", notice_board_sprite, single_notice_sprite3),
+    NoticeBoard(385, 382, "basics", notice_board_sprite, single_notice_sprite1),
+    NoticeBoard(900, 382, "logical-operators", notice_board_sprite, single_notice_sprite2),
+    NoticeBoard(1375, 311, "encryption", notice_board_sprite, single_notice_sprite3),
     NoticeBoard(480, 864, "decorators", notice_board_sprite, single_notice_sprite4),
     NoticeBoard(925, 760, "recursive-functions", notice_board_sprite, single_notice_sprite5)
 ]
@@ -259,15 +259,15 @@ def redrawGameWindow():
     # Display a message if the character is facing a notice board
     board = char_facing_board()
     if board is not None:
-        if board.level == "lvl1":
-            highscores = get_highscores("highscore_lvl1.db")
+        if board.level == "basics":
+            highscores = get_highscores("highscore_basics.db")
             text_box(f'Press SPACE to start Level 1!\nComplete the first challenge.{highscores}', board.x + 125, board.y)
-        elif board.level == "lvl2":
-            highscores = get_highscores("highscore_lvl2.db")
-            text_box(f'Press SPACE to start Level 2!\nGet ready for the second challenge.{highscores}', board.x + 125, board.y)
-        elif board.level == "lvl3":
-            highscores = get_highscores("highscore_lvl3.db")
-            text_box(f'Press SPACE to start Level 3!\nThe third challenge awaits you.{highscores}', board.x - 340, board.y)
+        elif board.level == "logical-operators":
+            highscores = get_highscores("highscore_logical-operators.db")
+            text_box(f'Press SPACE to start Level 2!\nGet ready for logical operators.{highscores}', board.x + 125, board.y)
+        elif board.level == "encryption":
+            highscores = get_highscores("highscore_encryption.db")
+            text_box(f'Press SPACE to start Level 3!\nEncryption awaits you.{highscores}', board.x - 340, board.y)
         elif board.level == "decorators":
             highscores = get_highscores("highscore_decorators.db")
             text_box(f'Press SPACE to learn about Decorators!\nUnderstand the concept of decorators in Python.{highscores}', board.x + 125, board.y)
@@ -312,8 +312,8 @@ while run:
     new_y = character.y
     # Check if the left key is pressed and the player is not at the left edge of the screen
     if keys[pygame.K_LEFT] and character.x > character.vel:
-        new_x -= character.vel  # Update the new x position
-        character.left = True   
+        new_x -= character.vel                              # Subtract the character's velocity from its current x position to move it to the left
+        character.left = True                               # Set the character's 'left' attribute to True to indicate it's moving left
         character.right = False
         character.standing = False
     # Check if the right key is pressed and the player is not at the right edge of the screen
@@ -322,6 +322,7 @@ while run:
         character.right = True
         character.left = False
         character.standing = False
+    # Check if the right key is pressed and the player is not at the right edge of the screen
     else:
         character.left = False
         character.right = False
@@ -354,15 +355,15 @@ while run:
 
         if not space_pressed:               # Run this code only if space key is not alread pressed = only once per press
             board = char_facing_board()     # Get the board that the character is facing
-            if board is not None:
+            if board is not None:           # If character is facing a board
                 # Run a new Python script
                 subprocess.Popen(["python3", "quizz_app.py" , username, board.level])    # Open the quiz script with the selected level in a new window
                 time.sleep(0.3)
                 pygame.quit()       # Close current window
                 run = False         # Stop the game loop
 
-            facing_exit = char_facing_exit()
-            if facing_exit != None:
+            facing_exit = char_facing_exit()    # get whether the character is facing one of the game exits
+            if facing_exit != None: # If yes
                 pygame.quit()       # Close current window
                 run = False         # Stop the game loop
 
@@ -377,5 +378,6 @@ while run:
 
     if not(character.standing):     # Define when character is walking
         character.walkCount += 1    # Increment the walk count
-            
-    redrawGameWindow()      # Redraw the game window = update the screen at every frame
+
+    if run:        
+        redrawGameWindow()      # Redraw the game window = update the screen at every frame

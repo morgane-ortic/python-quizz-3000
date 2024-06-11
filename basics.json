@@ -1,0 +1,38 @@
+[
+    {
+      "question": "# Greet the user by name:\nname = 'Alice'\n\n# Fix the code here:",
+      "code": "\nprint('Hello, ' + )",
+      "output": "Hello, Alice\n"
+    },
+    {
+      "question": "# Calculate the area of a rectangle:\nwidth = 5\nheight = 3\n\n# Fix the code here:",
+      "code": "width = 5\nheight = 3\nprint('Area:', width * height)",
+      "output": "Area: 15\n"
+    },
+    {
+      "question": "# Check if a number is even:\nnumber = 8\n\n# Fix the code here:",
+      "code": "number = 8\nprint('Even' if number % 2 == 0 else 'Odd')",
+      "output": "Even\n"
+    },
+    {
+        "question": "#Use 'for' loop to print numbers from 1 to 5:" ,
+        "code": "for i in range(1, 6)\nprint(i)",
+        "output": "1\n2\n3\n4\n5"
+    },
+    {
+        "question": "#Use 'while' loop to print numbers 1 to 5:",
+        "code": "i = 1\nwhile i <= 5:\n    print(i) i += 1",
+        "output": "1\n2\n3\n4\n5"
+    },
+    {
+        "question": "#Use 'for' loop to iterate over a list:",
+        "code": "fruits = ['apple', 'banana', 'cherry']\nfor fruit in fruits:\nprint('fruit')",
+        "output": "apple\nbanana\ncherry"
+    },
+    {
+        "question": "#Use 'while' loop to sum numbers until the sum exceeds 100:",
+        "code": "total = 0\nnum = 1\n\nwhile total >= 100:\n    total += num\n    num += 1\nprint('Total sum:', total)",
+        "output": "Total sum: 105"
+    }
+  ]
+  

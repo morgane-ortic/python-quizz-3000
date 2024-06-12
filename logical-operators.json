@@ -1,7 +1,7 @@
 [
     {
-        "question": "# Complete the code so that it combines the following two numbers with an AND, OR, and XOR operation.\n# The two numbers are binary numbers '1100' and '1010'.\n# Print the result in 3 print statements: first AND, then OR, and finally XOR.",
-        "code": "a = 0b1100\nb = 0b1010\n\nresultAND = a  b\nreusltOR = a  b\nresultXOR = a  b",
+        "question": "#Fix the code so that the print statement shows the result of the respective operations. The first one should represent the concatenation of the binary number variables a and b with an AND operation. Next, the result should be outputted with the OR operation, and finally, with an XOR operation.",
+        "code": "a = 0b1100\nb = 0b1010\n\nresultAND = a  b\nreusltOR = a  b\nresultXOR = a  b\n\nprint(bin(resultAND)[2:])\nprint(bin(reusltOR)[2:])n\print(bin(resultXOR)[2:])",
         "output": "1000\n1110\n110"
     },
     {

@@ -1,16 +1,16 @@
 [
     {
-        "question": "Complete the code so that it combines the following two numbers with an AND, OR, and XOR operation.\nThe two numbers are binary numbers '1100' and '1010'.\nPrint the result in 3 print statements: first AND, then OR, and finally XOR.",
+        "question": "# Complete the code so that it combines the following two numbers with an AND, OR, and XOR operation.\n# The two numbers are binary numbers '1100' and '1010'.\n# Print the result in 3 print statements: first AND, then OR, and finally XOR.",
         "code": "a = 0b1100\nb = 0b1010\n\nresultAND = a  b\nreusltOR = a  b\nresultXOR = a  b",
         "output": "1000\n1110\n110"
     },
     {
-        "question": "Complete the program so that it results in the logic gate of an AND operation with 3 inputs. It is \nimportant to start with the smallest binary numbers and end with the largest ones. Make sure to\n leave a space between each digit and start a new line for each number. Example\n0 0 0 0\n0 0 1 0",
+        "question": "# Complete the program so that it results in the logic gate of an AND operation with 3 inputs. # It is important to start with the smallest binary numbers and end with the largest ones. Make sure to\n leave a space between each digit and start a new line for each number. Example\n0 0 0 0\n0 0 1 0",
         "code": "for entrance1 in range(2):\n...\nprint(f\"{entrance1} {entrance2} {entrance3} {output}\")",
         "output": "0 0 0 0\n0 0 1 0\n0 1 0 0\n0 1 1 0\n1 0 0 0\n1 0 1 0\n1 1 0 0\n1 1 1 1"
     },
     {
-        "question": "Complete the program so that it results in the logic gate of an XOR operation with 3 inputs. It is important to\n start with the smallest binary numbers and end with the largest ones.\n Make sure to leave a space between each digit and start a new line for each number. Example:\n0 0 0 0\n0 0 1 1",
+        "question": "# Complete the program so that it results in the logic gate of an XOR operation with 3 inputs.\n# It is important to start with the smallest binary numbers and end with the largest ones.\n# Make sure to leave a space between each digit and start a new line for each number. Example:\n0 0 0 0\n0 0 1 1",
         "code": "for entrance1 in range(2):\n...\nprint(f\"{entrance1} {entrance2} {entrance3} {output}\")",
         "output": "0 0 0 0\n0 0 1 1\n0 1 0 1\n0 1 1 0\n1 0 0 1\n1 0 1 0\n1 1 0 0\n1 1 1 1"
     }

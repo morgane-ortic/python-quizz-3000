@@ -44,7 +44,7 @@ def main_screen():              # Create the main screen
     root.geometry("1300x800")   # Define the size of the window
 
     # Load background image
-    bg_image = ImageTk.PhotoImage(Image.open("pics/OIG4.jpg"))
+    bg_image = ImageTk.PhotoImage(Image.open("pics/bg.png"))
 
     # Left Frame for the background image and text
     left_frame = customtkinter.CTkFrame(master=root, width=900, height=600, corner_radius=0)
@@ -52,11 +52,6 @@ def main_screen():              # Create the main screen
 
     bg_label = Label(left_frame, image=bg_image)
     bg_label.place(relwidth=1, relheight=1)
-
-    # Add text to the left frame
-    text_label = customtkinter.CTkLabel(master=left_frame, text="PythonBugHunt",
-                                        font=("Arial", 44), text_color="white", justify=LEFT)
-    text_label.place(relx=0.1, rely=0.5, anchor=W)
 
     # Right Frame for the buttons
     right_frame = customtkinter.CTkFrame(master=root, width=400, height=600, corner_radius=0, fg_color="#020c15")

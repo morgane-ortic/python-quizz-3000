@@ -1,42 +1,63 @@
-import customtkinter as ctk
-import io
-import traceback
-from contextlib import redirect_stdout
-import sqlite3
-import sys
-import json
-import subprocess
+import customtkinter as ctk  # Customtkinter library for creating the GUI
+import io                    # For working with input/output streams (potentially for text handling)
+import traceback             # For error handling and stack trace information
+from contextlib import redirect_stdout  # For potentially capturing or redirecting program output
+import sqlite3               # For working with SQLite databases (likely for storing quiz data)
+import sys                   # For accessing system-specific parameters and functionalities
+import json                  # For working with JSON data (potentially for loading quiz questions or settings)
+import subprocess            # For potentially executing external commands or programs
+
 from rich.console import Console
 
 
-
-def load_menu(username):                   # Load the challenges from quizz file
+# Load the challenges from quizz file
+def load_menu(username):                   
     subprocess.Popen(["python3", "level_menu.py" , username])
 
+# This code block defines a function named `run_python_code` that can be used to execute a provided Python code snippet within your application. 
+
 def run_python_code(code):
-    # Create a string buffer to capture the output
+    """
+    Executes a given Python code snippet and captures its output and validity status.
+
+    Args:
+        code (str): The Python code snippet to be executed.
+
+    Returns:
+        tuple: A tuple containing the output of the code execution (str) and a boolean flag indicating if the code execution was valid (True) or encountered errors (False).
+    """
+
+    # Create a string buffer to capture the output of the code execution
     buffer = io.StringIO()
+
     try:
-        # Redirect stdout to the buffer
+        # Redirect standard output (print statements) to the buffer
         with redirect_stdout(buffer):
             exec(code, {})
+        # If no exceptions occurred, consider the code valid
         valid_code = True
     except Exception as e:
-        # Capture the full traceback and add it to the buffer
+        # If an exception occurs, capture the traceback (error details)
         buffer.write(traceback.format_exc())
-        # add status variable
-        # add a status variable indicating if output points an error
-        valid_code = False  
-    # Get the output from the buffer
+        # Set a flag to indicate the code execution encountered errors (not valid)
+        valid_code = False
+
+    # Get the captured output from the buffer as a string
     output = buffer.getvalue()
+    # Close the buffer (release resources)
     buffer.close()
+
+    # Return the combined output (including any errors) and the validity status
     return output, valid_code
 
-console = Console()
+
+# console = Console() Sunny code trying to fix
 class QuizApp(ctk.CTk):
     def __init__(self, username, level):  # Initialize the QuizApp class with username and root arguments
+        
+        # Call the superclass's __init__ method first to ensure proper window initialization
+        super().__init__() 
 
-        super().__init__()
         self.username = username    # Pass username as parameter to the class to use it inside it
         self.level = level          # Pass level as parameter to the class to use it inside it
         self.title("PythonBugHunt")
@@ -117,7 +138,7 @@ class QuizApp(ctk.CTk):
         self.code_editor.insert("0.0", question["question"])        # add the question field to left window
         self.code_editor.insert("end", "\n\n" + question["code"])   # add the code field to left window
         self.correct_output = question["output"]                    # import the expected output
-        self.next_button.configure(state="disabled", fg_color="grey")  # Disable the "Next" button
+        self.next_button.configure(state="disabled", fg_color="grey")  # ***Disable the "Next" button***
 
     def run_code(self):
         # Get the user's code from the Text widget
@@ -144,15 +165,15 @@ class QuizApp(ctk.CTk):
         if output.strip() == self.correct_output.strip():
             self.output_window.insert("end", "\nCorrect answer!", "tag_green")
             self.update_score(50)  # Increase score by 50 for a correct answer
-            self.next_button.configure(state="normal", fg_color="blue", hover_color="blue")  # Enable the "Next" button
+            self.next_button.configure(state="normal", fg_color="blue", hover_color="blue")  # *Enable the "Next" button*
         else:
             self.output_window.insert("end", "\nIncorrect answer. Please try again.", "tag_red")
             self.update_score(-5)  # Decrease score by 5 for an incorrect answer
 
-    def prev_question(self):
+    '''def prev_question(self):
         if self.current_question > 0:
             self.current_question -= 1
-            self.set_question(self.current_question)
+            self.set_question(self.current_question)'''
 
     def next_question(self):
         if self.current_question < len(self.quiz_questions) - 1:
@@ -165,7 +186,7 @@ class QuizApp(ctk.CTk):
         self.transfer_and_reset_score()
         load_menu(self.username)
         self.destroy()
-       
+# Ramon's code       
     def get_latest_score(self):
         try:
             conn = sqlite3.connect('user_info.db')
@@ -214,7 +235,7 @@ class QuizApp(ctk.CTk):
 
         conn_user_info.close()
         conn_highscore.close()
-
+# Ramon and Morgane's code
 if __name__ == "__main__":
     ctk.set_appearance_mode("dark")  # Set the appearance mode to dark
     imported_username = sys.argv[1] if len(sys.argv) > 1 else "Guest"  # Get the username from the command-line arguments, or use "Guest" as default value if no username is passed

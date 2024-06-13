@@ -7,7 +7,7 @@ import sys                   # For accessing system-specific parameters and func
 import json                  # For working with JSON data (potentially for loading quiz questions or settings)
 import subprocess            # For potentially executing external commands or programs
 
-from rich.console import Console
+
 
 
 # Load the challenges from quizz file
@@ -51,9 +51,9 @@ def run_python_code(code):
     return output, valid_code
 
 
-# console = Console() Sunny code trying to fix
+
 class QuizApp(ctk.CTk):
-    def __init__(self, username, level):  # Initialize the QuizApp class with username and root arguments
+    def __init__(self, username, level):  # ***Initialize the QuizApp class with username and root arguments***
         
         # Call the superclass's __init__ method first to ensure proper window initialization
         super().__init__() 

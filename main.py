@@ -44,7 +44,7 @@ def main_screen():              # Create the main screen
     root.geometry("1300x800")   # Define the size of the window
 
     # Load background image
-    bg_image = ImageTk.PhotoImage(Image.open("pics/bg.png"))
+    bg_image = ImageTk.PhotoImage(Image.open("pics/bg3.png"))
 
     # Left Frame for the background image and text
     left_frame = customtkinter.CTkFrame(master=root, width=900, height=600, corner_radius=0)

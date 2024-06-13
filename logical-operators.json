@@ -1,17 +1,17 @@
 [
     {
         "question": "#Fix the code so that the print statement shows the result of the respective operations. The first one should represent the concatenation of the binary number variables a and b with an AND operation. Next, the result should be outputted with the OR operation, and finally, with an XOR operation.",
-        "code": "a = 0b1100\nb = 0b1010\n\nresultAND = a  b\nreusltOR = a  b\nresultXOR = a  b\n\nprint(bin(resultAND)[2:])\nprint(bin(reusltOR)[2:])n\print(bin(resultXOR)[2:])",
+        "code": "a = 0b1100\nb = 0b1010\nresultAND = a  b\nreusltOR = a  b\nresultXOR = a   b\n\nprint(bin(resultAND)[2:])\nprint(bin(reusltOR)[2:])\nprint(bin(resultXOR)[2:]",
         "output": "1000\n1110\n110"
     },
     {
-        "question": "# Complete the program so that it results in the logic gate of an AND operation with 3 inputs. # It is important to start with the smallest binary numbers and end with the largest ones. Make sure to\n leave a space between each digit and start a new line for each number. Example\n0 0 0 0\n0 0 1 0",
-        "code": "for entrance1 in range(2):\n...\nprint(f\"{entrance1} {entrance2} {entrance3} {output}\")",
+        "question": "# Fix the following code. The goal is to create an AND gate. The AND gate should have 3 inputs and 1  output  There should be a space between each number. The example for the first line looks as follows. After that, continue to the next line \n# 0 0 0 0",
+        "code": "def AND(eingang1, eingang2, eingang3):\n    return eingang1  eingang2  eingang3\nfor a in range():\n    for b in range():\n        for c in range():\n            output = AND(a, b, c)\n            print(f\"|{a} {b} {c} {output}|\")",
         "output": "0 0 0 0\n0 0 1 0\n0 1 0 0\n0 1 1 0\n1 0 0 0\n1 0 1 0\n1 1 0 0\n1 1 1 1"
     },
     {
-        "question": "# Complete the program so that it results in the logic gate of an XOR operation with 3 inputs.\n# It is important to start with the smallest binary numbers and end with the largest ones.\n# Make sure to leave a space between each digit and start a new line for each number. Example:\n0 0 0 0\n0 0 1 1",
-        "code": "for entrance1 in range(2):\n...\nprint(f\"{entrance1} {entrance2} {entrance3} {output}\")",
+        "question": "# Fix the following code. The goal is to create an XOR gate. The XOR gate should have 3 inputs and 1  output  There should be a space between each number. The example for the first line looks as follows. After that, continue to the next line\n# 0 0 0 0",
+        "code": "def xor(eingang1, eingang2, eingang3):\n    return result\n\nfor a in range(2):\n    for b in range(2):\n        for c in range(2):\n            output = xor(a, b, c)\n            print(f\"|{a} {b} {c} {output}|\")",
         "output": "0 0 0 0\n0 0 1 1\n0 1 0 1\n0 1 1 0\n1 0 0 1\n1 0 1 0\n1 1 0 0\n1 1 1 1"
     }
 ]

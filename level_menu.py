@@ -5,24 +5,8 @@ import subprocess   # Import subprocess to run a new script from this menu
 import sys          # Import sys to access passed arguments
 import sqlite3
 
-start_frame = time.time()   # get the current time when we start the program in order to calculate frame index for sprite animations
-anim_noi = 3                # number of images for each of our animations
-anim_fps = 9                # frames per second of animation. Should be a multiple of 3
-space_pressed = False       # sets that space key is not pressed = it will wait for user to press it to perform corresponding code
-
-try:
-    username = sys.argv[1]  # Import username from the arguments passed from login file
-except IndexError:
-    username = "Guest"      # Defines username as "Guest" in case it has not been passed
-
-
-sourceFileDir = os.path.dirname(os.path.abspath(__file__)) # changes the current working directory of the Python script to the directory where the script is located
-os.chdir(sourceFileDir)
-
 pygame.init()   # Initialize pygame
-
 win = pygame.display.set_mode((1536,1000))  # Set the window size
-
 pygame.display.set_caption("Python Quest")    # Set the window title
 
 class SpriteSheet:
@@ -37,41 +21,6 @@ class SpriteSheet:
         image.blit(self.spritesheet, (0, 0), (x, y, width, height))
         image = pygame.transform.scale(image, (width * 3, height * 3))  # Scale if needed
         return image
-
-# Load the sprite sheet and divide it to extract individual character sprites
-characters = SpriteSheet('level-menu-img/characters.png')
-sprite_width = 16
-sprite_height = 20
-sprites = []    # Create list to store all the character sprites
-
-for k in range(3):  # For each section
-    for j in range(4):  # For each row
-        for i in range(3):  # For each column
-            x = (i + k*3) * sprite_width
-            y = j * sprite_height
-            print(f"Getting sprite at x={x}, y={y}")
-            image = characters.get_image(x, y, sprite_width, sprite_height)
-            sprites.append(image)   # Add the sprite to the list
-
-# Define the animations = which sprites to use for each direction
-walkRight = [sprites[i] for i in range(30, 33)]
-walkLeft = [sprites[i] for i in range(27, 30)]
-walkUp = [sprites[i] for i in range(33, 36)]
-walkDown = [sprites[i] for i in range(24, 27)]
-bg = pygame.image.load('level-menu-img/bg.png')    # import background image
-notice_board_sprite = pygame.image.load('level-menu-img/notice-board.png')          # import notice board image
-single_notice_sprite1 = pygame.image.load('level-menu-img/single_notice1.png')      # import notice images with each level name
-single_notice_sprite2 = pygame.image.load('level-menu-img/single_notice2.png')    
-single_notice_sprite3 = pygame.image.load('level-menu-img/single_notice3.png')
-single_notice_sprite4 = pygame.image.load('level-menu-img/single_notice4.png')
-single_notice_sprite5 = pygame.image.load('level-menu-img/single_notice5.png')   
-
-char = sprites[24]
-
-clock = pygame.time.Clock()
-
-# music = pygame.mixer.music.load('music.mp3')
-# pygame.mixer.music.play(-1)
 
 class player(object):
     '''Create a player class to represent the character in the game'''
@@ -127,30 +76,6 @@ class House(object):
         '''Initialize the house object with its attributes'''
         self.rect = pygame.Rect(x, y, width, height)    # Create a rect object for the house to deal with collisions
 
-# Create some houses
-houses = [                 
-    # Inn
-    House(380, 66, 629, 291),   # Create a house object with it coordinates on the screen and its size
-    House(531, 359, 331, 97),   # Numbers are, starting from top-left corner: x, y, width, height
-
-    # shop
-    House(234, 551, 346, 243),
-    House(234, 841, 194, 79),
-    House(484, 841, 96, 79),
-    House(234, 794, 14, 48),
-    House(521, 794, 59, 48),
-    House(252, 758, 171, 47),
-
-    # stables
-    House(1150, 286, 142, 167),
-
-    # small house
-    House(770, 575, 238, 217),
-    House(926, 792, 82, 30),
-
-    # fence
-    House(1008, 312, 141, 41),
-]
 
 class NoticeBoard(object):
     '''Create a notice board class to represent the notice boards in the game'''
@@ -166,22 +91,6 @@ class NoticeBoard(object):
         '''Draw the notice board on the screen'''
         win.blit(self.board_sprite, (self.x, self.y))
         win.blit(self.single_notice_sprite, (self.x, self.y))
-
-
-# Add notice boards
-notice_boards = [
-    NoticeBoard(385, 382, "basics", notice_board_sprite, single_notice_sprite1),
-    NoticeBoard(900, 382, "logical-operators", notice_board_sprite, single_notice_sprite2),
-    NoticeBoard(1375, 311, "encryption", notice_board_sprite, single_notice_sprite3),
-    NoticeBoard(480, 864, "decorators", notice_board_sprite, single_notice_sprite4),
-    NoticeBoard(925, 760, "recursive-functions", notice_board_sprite, single_notice_sprite5)
-]
-
-notice_board_positions = [(board.x, board.y) for board in notice_boards]    # Get the positions of each notice board
-
-# Add rect. for collision to notice boards
-for pos in notice_board_positions:
-    houses.append(House(pos[0], pos[1], notice_board_sprite.get_width(), notice_board_sprite.get_height()))
 
 def char_facing_board():
     '''Check if the character is facing a notice board'''
@@ -287,9 +196,104 @@ def redrawGameWindow():
 
 
 
-#mainloop
-font = pygame.font.SysFont('comicsans', 30, True)
+# Time and animation settings
+clock = pygame.time.Clock() # create a clock object to control game framerate
+start_frame = time.time()   # get the current time when we start the program in order to calculate frame index for sprite animations
+anim_noi = 3                # number of images for each of our animations
+anim_fps = 9                # frames per second of animation. Should be a multiple of 3
+space_pressed = False       # sets that space key is not pressed = it will wait for user to press it to perform corresponding code
+
+
+# Username handling
+try:
+    username = sys.argv[1]  # Import username from the arguments passed from login file
+except IndexError:
+    username = "Guest"      # Defines username as "Guest" in case it has not been passed
+
+
+# change the current working directory of the Python script to the directory where the script is located
+sourceFileDir = os.path.dirname(os.path.abspath(__file__)) 
+os.chdir(sourceFileDir)
+
+
+# Load sprites and define animations
+# Load the sprite sheet and divide it to extract individual character sprites
+characters = SpriteSheet('level-menu-img/characters.png')
+sprite_width = 16
+sprite_height = 20
+sprites = []    # Create list to store all the character sprites
+
+for k in range(3):  # For each section
+    for j in range(4):  # For each row
+        for i in range(3):  # For each column
+            x = (i + k*3) * sprite_width
+            y = j * sprite_height
+            print(f"Getting sprite at x={x}, y={y}")
+            image = characters.get_image(x, y, sprite_width, sprite_height)
+            sprites.append(image)   # Add the sprite to the list
+
+# Define the animations = which sprites to use for each direction
+walkRight = [sprites[i] for i in range(30, 33)]
+walkLeft = [sprites[i] for i in range(27, 30)]
+walkUp = [sprites[i] for i in range(33, 36)]
+walkDown = [sprites[i] for i in range(24, 27)]
+
+
+# Load images
+bg = pygame.image.load('level-menu-img/bg.png')    # import background image
+notice_board_sprite = pygame.image.load('level-menu-img/notice-board.png')          # import notice board image
+single_notice_sprite1 = pygame.image.load('level-menu-img/single_notice1.png')      # import notice images with each level name
+single_notice_sprite2 = pygame.image.load('level-menu-img/single_notice2.png')    
+single_notice_sprite3 = pygame.image.load('level-menu-img/single_notice3.png')
+single_notice_sprite4 = pygame.image.load('level-menu-img/single_notice4.png')
+single_notice_sprite5 = pygame.image.load('level-menu-img/single_notice5.png')   
+char = sprites[24]
+
 character = player(676, 470, 48, 60)     # Starting position and size of player
+
+
+# Create some houses
+houses = [                 
+    # Inn
+    House(380, 66, 629, 291),   # Create a house object with it coordinates on the screen and its size
+    House(531, 359, 331, 97),   # Numbers are, starting from top-left corner: x, y, width, height
+
+    # shop
+    House(234, 551, 346, 243),
+    House(234, 841, 194, 79),
+    House(484, 841, 96, 79),
+    House(234, 794, 14, 48),
+    House(521, 794, 59, 48),
+    House(252, 758, 171, 47),
+
+    # stables
+    House(1150, 286, 142, 167),
+
+    # small house
+    House(770, 575, 238, 217),
+    House(926, 792, 82, 30),
+
+    # fence
+    House(1008, 312, 141, 41),
+]
+
+# Add notice boards
+notice_boards = [
+    NoticeBoard(385, 382, "basics", notice_board_sprite, single_notice_sprite1),
+    NoticeBoard(900, 382, "logical-operators", notice_board_sprite, single_notice_sprite2),
+    NoticeBoard(1375, 311, "encryption", notice_board_sprite, single_notice_sprite3),
+    NoticeBoard(480, 864, "decorators", notice_board_sprite, single_notice_sprite4),
+    NoticeBoard(925, 760, "recursive-functions", notice_board_sprite, single_notice_sprite5)
+]
+notice_board_positions = [(board.x, board.y) for board in notice_boards]    # Get the positions of each notice board
+
+# Add rect. for collision to notice boards
+for pos in notice_board_positions:
+    houses.append(House(pos[0], pos[1], notice_board_sprite.get_width(), notice_board_sprite.get_height()))
+
+
+
+# Main game loop
 run = True                               # Initialize the 'run' variable to True to keep the game running
 while run:
     clock.tick(27)                      # Set the frame rate of the game. Should be a multiple of 9
